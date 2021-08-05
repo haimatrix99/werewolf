@@ -1,7 +1,4 @@
-
-
-
-TOKEN = 'ODE4Mzc5MTIxMzMwNjE4NDQ4.YEXM8w.Zaf6TTh2rK6dhNFJslWm3hOl-6Y'
+TOKEN = 'ODE4Mzc5MTIxMzMwNjE4NDQ4.YEXM8w.h4sGBzCkr04g7YrV1Aa6Ija3oRY'
 
 global list_player_id
 list_player_id = []
@@ -21,11 +18,8 @@ list_id = []
 global werewolfs
 werewolfs = []
 
-global couple
-couple = []
-
-global num_player
-num_player = 0
+global num_players
+num_players = 0
 
 global roles 
 roles = []
@@ -36,13 +30,15 @@ players = []
 global num_vote_player
 num_vote_player = []
 
-global isvote
+global isdone
 isvote = False
 
-global dict1
+global dict_value
+dict_value = {}
 
-global max1
-max1 = 0
+global max_value
+max_value = 0
+
 global lives 
 lives = 0
 
@@ -67,35 +63,9 @@ couples = []
 global iscupid
 iscupid = False
 
-global one, two, three, four, five, six
+global voting_time
+voting_time = False
 
-one, two, three, four, five, six = False, False, False, False, False, False
-
-global total_target
-total_target = []
-
-global player_target
-player_target = 0
-
-global votedone
-votedone = True
-
-global guard_list
-guard_list = []
-
-global guard_target
-guard_target = 0
-
-global isguard
-isguard = False
-
-global death_target
-death_target = 0
-
-global danguyen
-danguyen = False
-
-global blackwolf, curseguy, guard,  witch, seer, hunter
-blackwolf, curseguy, guard, witch, seer, hunter = [],[],[],[],[],[]
-
+global blackwolf, curseguy, guard,  witch, seer, hunter, cupid
+blackwolf, curseguy, guard, witch, seer, hunter, cupid = [],[],[],[],[],[],[]
 
