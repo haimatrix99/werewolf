@@ -1,7 +1,4 @@
-TOKEN = 'ODE4Mzc5MTIxMzMwNjE4NDQ4.YEXM8w.h4sGBzCkr04g7YrV1Aa6Ija3oRY'
-
-global list_player_id
-list_player_id = []
+TOKEN = 'ODE4Mzc5MTIxMzMwNjE4NDQ4.YEXM8w.yUeHgE8JWh3DvDCDanZ3vwbGdX8'
 
 global dict_player
 dict_player = {}
@@ -21,7 +18,7 @@ werewolfs = []
 global num_players
 num_players = 0
 
-global roles 
+global roles
 roles = []
 
 global players
@@ -39,11 +36,11 @@ dict_value = {}
 global max_value
 max_value = 0
 
-global lives 
+global lives
 lives = 0
 
-global deaths 
-deaths = 0 
+global deaths
+deaths = 0
 
 global kick
 kick = False
@@ -66,6 +63,5 @@ iscupid = False
 global voting_time
 voting_time = False
 
-global blackwolf, curseguy, guard,  witch, seer, hunter, cupid
-blackwolf, curseguy, guard, witch, seer, hunter, cupid = [],[],[],[],[],[],[]
-
+global blackwolf, curseguy, guard, witch, seer, hunter, cupid
+blackwolf, curseguy, guard, witch, seer, hunter, cupid = [], [], [], [], [], [], []

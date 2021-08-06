@@ -15,7 +15,7 @@ channels = {
     'tiên tri':872495086200565760,
     'phù thuỷ':872495057993859153,
     'thợ săn':872495103376240640,
-    'cupid':872494905245708298, 
+    'cupid':872494905245708298,
 }
 
 channels1 = {
@@ -27,8 +27,9 @@ channels1 = {
     'tiên tri':872090741818667049, 
     'phù thuỷ':872090939395571752,
     'thợ săn':872090783619108914, 
-    'cupid':872350367936020481, 
+    'cupid':872350367936020481,
 }
+
 
 @client.event
 async def on_ready():
@@ -47,9 +48,9 @@ async def clear(ctx, amount=10):
 
 @client.command()
 @commands.has_role('Quản trò')
-async def reset(ctx):
-    global werewolfs, num_players, roles, list_id, players, dict_player, dict_num_role, isdone, kick, lives, deaths, max_value, live_death, couples, iscupid, blackwolf, curseguy, guard,  witch, seer, hunter, cupid
-
+async def reset(ctx): 
+    global werewolfs, dict_num_player, dict_role_player, num_players, roles, list_id,players, dict_player, dict_num_role, isdone, kick, lives, deaths, max_value, live_death, couples, iscupid, blackwolf, curseguy, guard,  witch, seer, hunter, cupid
+    
     for member in werewolfs:
             channel = client.get_channel(channels['ma sói'])
             perms = channel.overwrites_for(member)
@@ -107,14 +108,6 @@ async def reset(ctx):
     num_vote_player.clear()
     live_death.clear()
     dict_value.clear()
-    kick = False
-    isdone = False
-    iscupid = False
-    lives = 0
-    deaths = 0
-    max_value = 0
-    num_players = 0
-
     werewolfs.clear()
     blackwolf.clear()
     curseguy.clear()
@@ -123,6 +116,13 @@ async def reset(ctx):
     witch.clear()
     hunter.clear()
     cupid.clear()
+    kick = False
+    isdone = False
+    iscupid = False
+    lives = 0
+    deaths = 0
+    max_value = 0
+    num_players = 0
 
     await ctx.send("Reset game mới")
     await ctx.message.delete()
@@ -144,15 +144,13 @@ async def play(ctx):
     global kick
     member = ctx.author
     role = get(ctx.guild.roles, name="Werewolf player")
-    if member.id not in list_player_id and kick == False:
-        list_player_id.append(member.id)
+    if role not in member.roles and kick == False:
         await member.add_roles(role, atomic=False)
-        await ctx.send(f"{member.display_name} đã tham gia vào game!")
-    elif role in member.roles and member.id in list_player_id:
+        await ctx.send(f"{member.mention} đã tham gia vào game!")
+    elif role in member.roles:
         await ctx.send("Bạn đã ở trong game rồi!")
     elif kick:
         await ctx.send("Game chưa kết thúc.")
-    print(list_player_id)
     await ctx.message.delete()
 
 
@@ -160,16 +158,11 @@ async def play(ctx):
 async def quit(ctx):
     member = ctx.author
     role = get(ctx.guild.roles, name="Werewolf player")
-    if role in member.roles and member.id in list_player_id:
-        list_player_id.remove(member.id)
+    if role in member.roles:
         await member.remove_roles(role, atomic=False)
-        await ctx.send(f"{member.display_name} đã thoát game.")
-    elif role in member.roles and member.id not in list_player_id:
-        await member.remove_roles(role, atomic=False)
-        await ctx.send(f"{member.display_name} đã thoát game.")
+        await ctx.send(f"{member.mention} đã thoát game.")
     else:
         await ctx.send("Bạn chưa tham gia vào game.")
-    print(list_player_id)
     await ctx.message.delete()
 
 
@@ -343,7 +336,6 @@ async def vote(ctx, player):
         if int(player) in dict_player and ctx.author.id not in list_vote_player:
             num_vote_player.append(int(player))
             list_vote_player.append(ctx.author.id)
-            print(num_vote_player)
             await ctx.send(f"{ctx.author.display_name} đã chọn {dict_player[int(player)].mention} là người lên dàn")
         elif ctx.author.id in list_vote_player:
             await ctx.send(f"{ctx.author.display_name} đã vote hoặc skip vote rồi!")
@@ -388,13 +380,11 @@ async def kiemtra(ctx):
         dict_value.clear()
         isdone = True
     elif len(num_vote_player) == 0:
-        print(num_vote_player)
         await ctx.send("Sáng hôm nay chúng ta không có ai bị lên dàn bởi mọi người đã skip vote!")
         num_vote_player.clear()
         list_vote_player.clear()
         dict_value.clear()
         isdone = False
-    print(lives, deaths)
     await ctx.message.delete()
 
 @client.command()
@@ -441,9 +431,7 @@ async def ketqua(ctx):
         await ctx.send(f"{dict_player[max_value].mention} chết với số biểu quyết {lives} Sống và {deaths} Chết")
         await member.remove_roles(role, atomic=False)
         dict_player.pop(max_value)
-        list_player_id.remove(member.id)
         kick = True
-        # await ctx.send(f"Quản trò đã thu bài của {member.mention}")
         if member in werewolfs and member not in blackwolf:
             channel = client.get_channel(channels['ma sói'])
             perms = channel.overwrites_for(member)
@@ -543,21 +531,17 @@ async def ketqua(ctx):
             werewolfs.remove(member)
     elif isdone == False:
         await ctx.send("Sáng nay không ai chết vì không có biểu quyết!")
+        
+    if len(werewolfs) == len(dict_player) - len(werewolfs):
+            await ctx.send("Endgame, Sói thắng bởi vì số sói hiện tại bằng số dân!")
+    if len(werewolfs) == 0:
+            await ctx.send("Endgame, Dân thắng!")
     lives = 0
     deaths = 0
     max_value = 0
     live_death.clear()
     isdone = False
     voting_time = False
-    await ctx.message.delete()
-
-@client.command()
-@commands.has_role("Werewolf player")
-async def chucnang(ctx):
-    global roles, num_players
-    embed = discord.Embed(title="Roles", colour=discord.Color.blue())
-    embed.add_field(name = f"Có {num_players} chức năng trong game", value = " - ".join(role for role in roles))
-    await ctx.send(embed = embed)
     await ctx.message.delete()
 
 @client.command()
@@ -592,7 +576,6 @@ async def thubai(ctx, member: discord.Member):
     role = get(ctx.guild.roles, name="Werewolf player")
     if dict_num_player[member] in dict_player:
         dict_player.pop(dict_num_player[member])
-        list_player_id.remove(member.id)
         kick = True
         await member.remove_roles(role, atomic= False)
         await ctx.send(f"{member.mention} đã chết")
@@ -695,6 +678,11 @@ async def thubai(ctx, member: discord.Member):
             werewolfs.remove(member)
     else:
         await ctx.send("Player không hợp lệ")
+
+    if len(werewolfs) == len(dict_player) - len(werewolfs):
+            await ctx.send("Endgame, Sói thắng bởi vì số sói hiện tại bằng số dân!")
+    if len(werewolfs) == 0:
+            await ctx.send("Endgame, Dân thắng!")
     await ctx.message.delete()
 
 @client.command()
@@ -842,9 +830,10 @@ async def makeww(ctx, member: discord.Member):
     perms = channel.overwrites_for(member)
     perms.view_channel = True
     await channel.set_permissions(member, overwrite=perms)
-    channel1 = await member.create_dm()
-    await channel1.send("Bạn đã hoá sói!")
-    # await ctx.message.delete()
+    dm_channel = await member.create_dm()
+    await dm_channel.send("Bạn đã hoá sói!")
+    await ctx.message.author.send(f"{member.display_name} đã hoá sói!")
+    await ctx.message.delete()
 
 @client.event
 async def on_command_error(ctx, error):
@@ -879,6 +868,17 @@ async def modhelp(ctx):
     embed.add_field(name = "$mute", value= "Lệnh này dùng để chặn tất cả mọi người chơi chat vào text channel vào ban ngày, đến ban đêm thì $unmute")
     embed.add_field(name = "$unmute", value = "Lệnh này dùng để bỏ chặn cho phép mọi người nc vào ban đêm")
     embed.add_field(name = "$mod", value = "Lệnh này cho quản trò biết chức năng của tất cả mọi người")
+    embed.add_field(name = "$reset", value = "Lệnh này dùng để reset sau khi xong 1 game!")
     await ctx.send(embed = embed)
     await ctx.message.delete()
+   
+@client.command()
+@commands.has_role("Werewolf player")
+async def chucnang(ctx):
+    global roles, num_players
+    embed = discord.Embed(title="Chức năng có trong game", colour=discord.Color.blue())
+    embed.add_field(name = f"Có {num_players} chức năng trong game", value = " - ".join(role for role in roles))
+    await ctx.send(embed = embed)
+    await ctx.message.delete()
+ 
 client.run(TOKEN)
