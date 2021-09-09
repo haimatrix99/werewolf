@@ -1,4 +1,4 @@
-TOKEN = 'ODE4Mzc5MTIxMzMwNjE4NDQ4.YEXM8w.yUeHgE8JWh3DvDCDanZ3vwbGdX8'
+TOKEN = ''
 
 global dict_player
 dict_player = {}
@@ -33,8 +33,8 @@ isvote = False
 global dict_value
 dict_value = {}
 
-global max_value
-max_value = 0
+global player_kick
+player_kick = 0
 
 global lives
 lives = 0
@@ -65,3 +65,39 @@ voting_time = False
 
 global blackwolf, curseguy, guard, witch, seer, hunter, cupid
 blackwolf, curseguy, guard, witch, seer, hunter, cupid = [], [], [], [], [], [], []
+
+global list_guarded
+list_guarded = [0]
+
+global guarded
+guarded = False
+
+global list_target, list_werewolf_select
+list_target, list_werewolf_select = [],[]
+
+global player_death
+player_death = None
+
+global isblackwolf
+isblackwolf = False
+
+global isseer
+isseer = False
+
+global witch_kill, witch_rescure
+witch_kill, witch_rescure = 1, 1
+
+global turn
+turn = 0
+
+global hunter_list
+hunter_list=[]
+
+global fire
+fire = False
+
+global endgame
+endgame = False
+
+global info_death
+info_death = []
