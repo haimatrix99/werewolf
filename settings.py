@@ -1,5 +1,3 @@
-TOKEN = ''
-
 global dict_player
 dict_player = {}
 
