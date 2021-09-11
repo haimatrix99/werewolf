@@ -1509,7 +1509,7 @@ async def turnround(ctx, index):
             await unmute_guard(ctx)
             for member in guard:
                 await guard_channel.send(member.mention)
-            await guard_channel.send("Bạn có 30s để dùng lệnh ở trong này! Lệnh của bảo vệ: $baove [Số của player muốn bảo vệ]")
+            await guard_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của bảo vệ: $baove [Số của player muốn bảo vệ]")
             await danhsach(guard_channel)
             await asyncio.sleep(30)
             await mute_guard(ctx)
@@ -1517,7 +1517,7 @@ async def turnround(ctx, index):
             await unmute_werewolf(ctx)
             for member in werewolfs:
                 await werewolf_channel.send(member.mention)
-            await werewolf_channel.send("Bạn có 45s để dùng lệnh ở trong này!  Lệnh của đàn sói: $can [Số của player muốn cắn]")
+            await werewolf_channel.send("Bạn có 45s để dùng lệnh ở trong này!\nLệnh của đàn sói: $can [Số của player muốn cắn]")
             await danhsach(werewolf_channel)
             await asyncio.sleep(45)
             await mute_werewolf(ctx)
@@ -1525,7 +1525,7 @@ async def turnround(ctx, index):
             await unmute_blackwolf(ctx)
             for member in blackwolf:
                 await blackwolf_channel.send(member.mention)
-            await blackwolf_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của sói nguyền: $nguyen hoặc $khongnguyen")
+            await blackwolf_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của sói nguyền: $nguyen hoặc $khongnguyen")
             await danhsach(blackwolf_channel)
             await asyncio.sleep(30)
             await mute_blackwolf(ctx)
@@ -1533,7 +1533,7 @@ async def turnround(ctx, index):
             await unmute_witch(ctx)
             for member in witch:
                 await witch_channel.send(member.mention)
-            await witch_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của phù thuỷ: $cuu hoặc $khongcuu, $giet [Số của player muốn giết] hoặc $khonggiet")
+            await witch_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của phù thuỷ: $cuu hoặc $khongcuu, $giet [Số của player muốn giết] hoặc $khonggiet")
             await danhsach(witch_channel)
             if player_death == None:
                 await witch_channel.send(f"Đêm nay không ai chết. Bạn có muốn giết thêm ai không?. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
@@ -1547,7 +1547,7 @@ async def turnround(ctx, index):
             await unmute_seer(ctx)
             for member in seer:
                 await seer_channel.send(member.mention)
-            await seer_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của tiên tri: $tientri [Số của player muốn tiên tri]")
+            await seer_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của tiên tri: $tientri [Số của player muốn tiên tri]")
             await danhsach(seer_channel)
             await asyncio.sleep(30)
             await mute_seer(ctx)
@@ -1555,7 +1555,7 @@ async def turnround(ctx, index):
             await unmute_hunter(ctx)
             for member in hunter:
                 await hunter_channel.send(member.mention)
-            await hunter_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của thợ săn: $ghim [Số của player muốn ghim]")
+            await hunter_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của thợ săn: $ghim [Số của player muốn ghim]")
             await danhsach(hunter_channel)
             await asyncio.sleep(30)
             await mute_hunter(ctx)
@@ -1610,7 +1610,7 @@ async def turnround(ctx, index):
         await unmute_cupid(ctx)
         for member in cupid:
             await cupid_channel.send(member.mention)
-        await cupid_channel.send("Mời bạn chọn cặp đôi cho mình! Lệnh của cupid: $ghepdoi [Số của player1] [Số của player2]")
+        await cupid_channel.send("Mời bạn chọn cặp đôi cho mình!\nLệnh của cupid: $ghepdoi [Số của player1] [Số của player2]")
         await danhsach(cupid_channel)
     if index == 2:
         await mute_cupid(ctx)
@@ -1622,7 +1622,7 @@ async def turnround(ctx, index):
             await unmute_guard(ctx)
             for member in guard:
                 await guard_channel.send(member.mention)
-            await guard_channel.send("Bạn có 30s để dùng lệnh ở trong này! Lệnh của bảo vệ: $baove [Số của player muốn bảo vệ]")
+            await guard_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của bảo vệ: $baove [Số của player muốn bảo vệ]")
             await danhsach(guard_channel)
             await asyncio.sleep(30)
             await mute_guard(ctx)
@@ -1630,7 +1630,7 @@ async def turnround(ctx, index):
             await unmute_werewolf(ctx)
             for member in werewolfs:
                 await werewolf_channel.send(member.mention)
-            await werewolf_channel.send("Bạn có 45s để dùng lệnh ở trong này!  Lệnh của đàn sói: $can [Số của player muốn cắn]")
+            await werewolf_channel.send("Bạn có 45s để dùng lệnh ở trong này!\nLệnh của đàn sói: $can [Số của player muốn cắn]")
             await danhsach(werewolf_channel)
             await asyncio.sleep(45)
             await mute_werewolf(ctx)
@@ -1638,7 +1638,7 @@ async def turnround(ctx, index):
             await unmute_blackwolf(ctx)
             for member in blackwolf:
                 await blackwolf_channel.send(member.mention)
-            await blackwolf_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của sói nguyền: $nguyen hoặc $khongnguyen")
+            await blackwolf_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của sói nguyền: $nguyen hoặc $khongnguyen")
             await danhsach(blackwolf_channel)
             await asyncio.sleep(30)
             await mute_blackwolf(ctx)
@@ -1646,7 +1646,7 @@ async def turnround(ctx, index):
             await unmute_witch(ctx)
             for member in witch:
                 await witch_channel.send(member.mention)
-            await witch_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của phù thuỷ: $cuu hoặc $khongcuu, $giet [Số của player muốn giết] hoặc $khonggiet")
+            await witch_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của phù thuỷ: $cuu hoặc $khongcuu, $giet [Số của player muốn giết] hoặc $khonggiet")
             await danhsach(witch_channel)
             if player_death == None:
                 await witch_channel.send(f"Đêm nay không ai chết. Bạn có muốn giết thêm ai không?. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
@@ -1660,7 +1660,7 @@ async def turnround(ctx, index):
             await unmute_seer(ctx)
             for member in seer:
                 await seer_channel.send(member.mention)
-            await seer_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của tiên tri: $tientri [Số của player muốn tiên tri]")
+            await seer_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của tiên tri: $tientri [Số của player muốn tiên tri]")
             await danhsach(seer_channel)
             await asyncio.sleep(30)
             await mute_seer(ctx)
@@ -1668,7 +1668,7 @@ async def turnround(ctx, index):
             await unmute_hunter(ctx)
             for member in hunter:
                 await hunter_channel.send(member.mention)
-            await hunter_channel.send("Bạn có 30s để dùng lệnh ở trong này!  Lệnh của thợ săn: $ghim [Số của player muốn ghim]")
+            await hunter_channel.send("Bạn có 30s để dùng lệnh ở trong này!\nLệnh của thợ săn: $ghim [Số của player muốn ghim]")
             await danhsach(hunter_channel)
             await asyncio.sleep(30)
             await mute_hunter(ctx)
