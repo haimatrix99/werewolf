@@ -67,7 +67,7 @@ global blackwolf, curseguy, guard, witch, seer, hunter, cupid
 blackwolf, curseguy, guard, witch, seer, hunter, cupid = [], [], [], [], [], [], []
 
 global list_guarded
-list_guarded = [0]
+list_guarded = []
 
 global guarded
 guarded = False
@@ -101,3 +101,12 @@ endgame = False
 
 global info_death
 info_death = []
+
+global roles_in_game
+roles_in_game = []
+
+global curseguyww
+curseguyww = False
+
+global startgame
+startgame = False

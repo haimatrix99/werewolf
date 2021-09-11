@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 from settings import *
+import copy
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
@@ -17,6 +18,7 @@ testing1 = {
     'phù thuỷ':872495057993859153,
     'thợ săn':872495103376240640,
     'cupid':872494905245708298,
+    'thảo luận': 872488550954860587,
 }
 
 testing2 = {
@@ -29,6 +31,7 @@ testing2 = {
     'phù thuỷ':872090939395571752,
     'thợ săn':872090783619108914, 
     'cupid':872350367936020481,
+    'thảo luận': 872104827541397515,
 }
 
 channels = {
@@ -40,8 +43,8 @@ channels = {
     'tiên tri':885082252369879050, 
     'phù thuỷ':885082292748435466,
     'thợ săn':885082332984377374, 
-    'cupid':885082205662097428,
-    'thảo luận':885081856498868228,
+    'cupid':885082205662097428, 
+    'thảo luận':885829759261605938,
 }
 
 def check_player(lst):
@@ -68,21 +71,19 @@ def check_player(lst):
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
 
-
 @client.command()
 async def ping(ctx):
     await ctx.send("pong")
 
-
 @client.command()
 @commands.has_role('Quản trò')
-async def clear(ctx, amount=10):
+async def clear(ctx, amount=50):
     await ctx.channel.purge(limit=amount)
 
 @client.command()
 @commands.has_role('Quản trò')
 async def reset(ctx): 
-    global info_death, werewolfs, dict_num_player, dict_role_player, num_players, roles, list_id,players, dict_player, dict_num_role, isdone, kick, lives, deaths, player_kick, live_death, couples, iscupid, blackwolf, curseguy, guard,  witch, seer, hunter, cupid, turn, fire, list_guarded, guarded, witch_kill, witch_rescure, isblackwolf, isseer, hunter_list, fire, player_death, list_werewolf_select, list_target
+    global info_death, werewolfs, dict_num_player, dict_role_player, num_players, roles, list_id,players, dict_player, dict_num_role, isdone, kick, lives, deaths, player_kick, live_death, couples, iscupid, blackwolf, curseguy, guard,  witch, seer, hunter, cupid, turn, fire, list_guarded, guarded, witch_kill, witch_rescure, isblackwolf, isseer, hunter_list, fire, player_death, list_werewolf_select, list_target, curseguyww, info_death,endgame, startgame
     general = client.get_channel(channels['thảo luận'])
     for member in werewolfs:
             channel = client.get_channel(channels['ma sói'])
@@ -154,6 +155,7 @@ async def reset(ctx):
     hunter_list.clear()
     list_werewolf_select.clear()
     hunter_list.clear()
+    roles_in_game.clear()
     fire = False
     turn = 0
     witch_kill = 1
@@ -169,19 +171,25 @@ async def reset(ctx):
     deaths = 0
     player_kick = 0
     num_players = 0
+    endgame = False
+    startgame = False
+    curseguyww = False
+    info_death.clear()
     await general.send("Reset game mới")
 
 @client.command()
-@commands.has_role('Quản trò')
+@commands.has_role('Werewolf player')
 async def addrole(ctx, *, role):
-    global roles, num_players, players, endgame
+    global roles, num_players, players, endgame, roles_in_game
     endgame = False
     roles = role.split(', ')
+    roles_in_game = copy.copy(roles)
     num_players = len(roles)
     players = list(range(1,num_players+1))
     embed = discord.Embed(title="Roles", colour=discord.Color.blue())
     embed.add_field(name = f"Có {num_players} chức năng trong game", value = " - ".join(role for role in roles))
     await ctx.send(embed = embed)
+    await ctx.message.delete()
 
 @client.command()
 async def play(ctx):
@@ -191,11 +199,12 @@ async def play(ctx):
     role = get(ctx.guild.roles, name="Werewolf player")
     if role not in member.roles and kick == False:
         await member.add_roles(role, atomic=False)
-        await general.send(f" {member.mention} đã tham gia vào game!")
+        await general.send(f"{member.mention} đã tham gia vào game!")
     elif role in member.roles:
         await general.send("Bạn đã ở trong game rồi!")
     elif kick:
         await general.send("Game chưa kết thúc.")
+    await ctx.message.delete()
 
 
 @client.command()
@@ -208,29 +217,32 @@ async def quit(ctx):
         await general.send(f"{member.mention} đã thoát game.")
     else:
         await general.send("Bạn chưa tham gia vào game.")
+    await ctx.message.delete()
 
 
 @client.command()
 @commands.has_role("Werewolf player")
 async def getrole(ctx):
-
-    channel1 = client.get_channel(channels['ma sói'])
-    channel2 = client.get_channel(channels['sói nguyền'])
-    channel3 = client.get_channel(channels['bán sói'])
-    channel4 = client.get_channel(channels['bảo vệ'])
-    channel5 = client.get_channel(channels['phù thuỷ'])
-    channel6 = client.get_channel(channels['tiên tri'])
-    channel7 = client.get_channel(channels['thợ săn'])
-    channel8 = client.get_channel(channels['cupid'])
+    werewolf_channel = client.get_channel(channels['ma sói'])
+    blackwolf_channel = client.get_channel(channels['sói nguyền'])
+    curseguy_channel = client.get_channel(channels['bán sói'])
+    guard_channel = client.get_channel(channels['bảo vệ'])
+    witch_channel = client.get_channel(channels['phù thuỷ'])
+    seer_channel = client.get_channel(channels['tiên tri'])
+    hunter_channel = client.get_channel(channels['thợ săn'])
+    cupid_channel = client.get_channel(channels['cupid'])
     general = client.get_channel(channels['thảo luận'])
 
-    global roles, players, dict_player, dict_num_player, dict_num_role, dict_role_player, blackwolf, curseguy, guard,  witch, seer, hunter, werewolfs, cupid, num_players
+    global roles_in_game, startgame, roles, players, dict_player, dict_num_player, dict_num_role, dict_role_player, blackwolf, curseguy, guard,  witch, seer, hunter, werewolfs, cupid, num_players
 
     shuffle(roles)
     shuffle(players)
-    if len(roles) == 0:
-        await ctx.send("Có thể game chưa bắt đầu hoặc đã đủ người chơi rồi")
-    elif len(roles) != 0:
+
+    if len(roles_in_game) == 0:
+        await ctx.send("Quản trò chưa setup xong!")
+    if len(roles) == 0 and startgame == True:
+        await ctx.send("Game đã được được bắt đầu")
+    elif len(roles) != 0 and startgame == False:
         if ctx.author.id not in list_id:
             role_player = roles.pop()
             player = players.pop()
@@ -242,9 +254,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms1 = channel1.overwrites_for(ctx.author)
+                perms1 = werewolf_channel.overwrites_for(ctx.author)
                 perms1.view_channel = True
-                await channel1.set_permissions(ctx.author, overwrite=perms1)
+                await werewolf_channel.set_permissions(ctx.author, overwrite=perms1)
 
 
                 await ctx.message.author.send("Chức năng của bạn là Sói thường")
@@ -256,16 +268,15 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms1 = channel1.overwrites_for(ctx.author)
+                perms1 = werewolf_channel.overwrites_for(ctx.author)
                 perms1.view_channel = True
-                await channel1.set_permissions(ctx.author, overwrite=perms1)
+                await werewolf_channel.set_permissions(ctx.author, overwrite=perms1)
 
-                perms2 = channel2.overwrites_for(ctx.author)
+                perms2 = blackwolf_channel.overwrites_for(ctx.author)
                 perms2.view_channel = True
-                await channel2.set_permissions(ctx.author, overwrite=perms2)
+                await blackwolf_channel.set_permissions(ctx.author, overwrite=perms2)
 
                 blackwolf.append(ctx.author)
-
                 await ctx.message.author.send("Chức năng của bạn là Sói nguyền")
             elif role_player == "Bán sói":
                 dict_num_role[player] = role_player
@@ -274,9 +285,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms3 = channel3.overwrites_for(ctx.author)
+                perms3 = curseguy_channel.overwrites_for(ctx.author)
                 perms3.view_channel = True
-                await channel3.set_permissions(ctx.author, overwrite=perms3)
+                await curseguy_channel.set_permissions(ctx.author, overwrite=perms3)
 
                 await ctx.message.author.send("Chức năng của bạn là Bán sói")
                 curseguy.append(ctx.author)
@@ -287,9 +298,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms4 = channel4.overwrites_for(ctx.author)
+                perms4 = guard_channel.overwrites_for(ctx.author)
                 perms4.view_channel = True
-                await channel4.set_permissions(ctx.author, overwrite=perms4)
+                await guard_channel.set_permissions(ctx.author, overwrite=perms4)
 
                 await ctx.message.author.send("Chức năng của bạn là Bảo vệ")
                 guard.append(ctx.author)
@@ -300,9 +311,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms8 = channel8.overwrites_for(ctx.author)
+                perms8 = cupid_channel.overwrites_for(ctx.author)
                 perms8.view_channel = True
-                await channel8.set_permissions(ctx.author, overwrite=perms8)
+                await cupid_channel.set_permissions(ctx.author, overwrite=perms8)
 
                 await ctx.message.author.send("Chức năng của bạn là Cupid")
                 cupid.append(ctx.author)
@@ -314,9 +325,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms6 = channel6.overwrites_for(ctx.author)
+                perms6 = seer_channel.overwrites_for(ctx.author)
                 perms6.view_channel = True
-                await channel6.set_permissions(ctx.author, overwrite=perms6)
+                await seer_channel.set_permissions(ctx.author, overwrite=perms6)
 
                 await ctx.message.author.send("Chức năng của bạn là Tiên tri")
                 seer.append(ctx.author)
@@ -327,9 +338,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms5 = channel5.overwrites_for(ctx.author)
+                perms5 = witch_channel.overwrites_for(ctx.author)
                 perms5.view_channel = True
-                await channel5.set_permissions(ctx.author, overwrite=perms5)
+                await witch_channel.set_permissions(ctx.author, overwrite=perms5)
 
                 await ctx.message.author.send("Chức năng của bạn là Phù thuỷ")
                 witch.append(ctx.author)
@@ -340,9 +351,9 @@ async def getrole(ctx):
                 dict_player[player] = ctx.author
                 dict_num_player[ctx.author] = player
 
-                perms7 = channel7.overwrites_for(ctx.author)
+                perms7 = hunter_channel.overwrites_for(ctx.author)
                 perms7.view_channel = True
-                await channel7.set_permissions(ctx.author, overwrite=perms7)
+                await hunter_channel.set_permissions(ctx.author, overwrite=perms7)
 
                 await ctx.message.author.send("Chức năng của bạn là Thợ săn")
                 hunter.append(ctx.author)
@@ -357,56 +368,62 @@ async def getrole(ctx):
             await ctx.send(f"{ctx.author.mention} là Player số {player}")
         else:
             await ctx.send("Bạn đã nhận chức năng của mình rồi!")
-    if len(dict_player) == num_players:
+    if len(dict_player) == num_players and startgame == False and num_players != 0:
+        startgame = True
         await general.send("Đã đủ người chơi, Game xin được bắt đầu!")
+        await danhsach(general)
         if len(cupid) != 0:
             await turnround(ctx,0)
         else:
             await turnround(ctx,1)
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
 async def skipvote(ctx):
     global list_vote_player, num_vote_player
     general = client.get_channel(channels['thảo luận'])
-
     if voting_time:
         if ctx.author.id not in list_vote_player:
             list_vote_player.append(ctx.author.id)
             num_vote_player = num_vote_player
             await general.send(f"{ctx.author.display_name} đã skip vote!")
-    
         else:
             await general.send(f"{ctx.author.display_name} đã vote hoặc skip vote rồi!")
     else:
         await general.send("Chưa đến thời gian để biểu quyết")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
-async def vote(ctx, player):
+async def vote(ctx, num_player):
+    num_player = int(num_player)
     global num_players, list_vote_player, dict_player
     general = client.get_channel(channels['thảo luận'])
-
     if num_players != 0 and voting_time:
-        if int(player) in dict_player and ctx.author.id not in list_vote_player:
-            num_vote_player.append(int(player))
+        member = dict_player[num_player]
+        if num_player in dict_player and ctx.author.id not in list_vote_player:
+            num_vote_player.append(num_player)
             list_vote_player.append(ctx.author.id)
-            await general.send(f"{ctx.author.display_name} đã chọn {dict_player[int(player)].mention} là người lên dàn")
+            await general.send(f"{ctx.author.display_name} đã chọn {member.mention} là người lên dàn")
         elif ctx.author.id in list_vote_player:
             await general.send(f"{ctx.author.display_name} đã vote hoặc skip vote rồi!")
-        elif int(player) not in dict_player:
+        elif num_player not in dict_player:
             await general.send("Player không hợp lệ")
     elif num_players == 0:
         await general.send("Game chưa bắt đầu để vote!")
     elif voting_time == False:
         await general.send("Chưa đến thời gian để biểu quyết")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Quản trò")
 async def kiemtra(ctx):
     global num_vote_player, isdone, dict_value, player_kick
     general = client.get_channel(channels['thảo luận'])
-
     if len(set(num_vote_player)) >= 2:
         dict_value = {index: num_vote_player.count(index) for index in num_vote_player}
         player_kick = max(dict_value, key = dict_value.get)
@@ -447,7 +464,6 @@ async def kiemtra(ctx):
 @commands.has_role("Werewolf player")
 async def song(ctx):
     general = client.get_channel(channels['thảo luận'])
-
     global lives, live_death, dict_player
     if isdone and dict_player[player_kick].name != ctx.author.name and ctx.author.id not in live_death:
         lives += 1
@@ -459,12 +475,13 @@ async def song(ctx):
         await general.send("Bạn đã biểu quyết rồi!")
     elif isdone == False:
         await general.send("Không có cuộc biểu quyết sống/chết nào cả!")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
 async def chet(ctx):
     general = client.get_channel(channels['thảo luận'])
-
     global deaths, live_death, dict_player
     if isdone and dict_player[player_kick].name != ctx.author.name and ctx.author.id not in live_death:
         deaths += 1
@@ -476,12 +493,14 @@ async def chet(ctx):
         await general.send("Bạn đã biểu quyết rồi!")
     elif isdone == False:
         await general.send("Không có cuộc biểu quyết sống/chết nào cả!")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Quản trò")
 async def ketqua(ctx):
     general = client.get_channel(channels['thảo luận'])
-    global endgame, lives, deaths, player_kick, kick, dict_player,live_death, isdone, voting_time, fire, guarded,player_death, isseer, turn, info_death
+    global hunter_list, list_guarded, endgame, lives, deaths, player_kick, kick, dict_player,live_death, isdone, voting_time, fire, guarded,player_death, isseer, turn, info_death
     role = get(ctx.guild.roles, name="Werewolf player")
     if lives >= deaths and isdone:
         member = dict_player[player_kick]
@@ -493,19 +512,20 @@ async def ketqua(ctx):
         dict_player.pop(player_kick)
         kick = True
         if member in werewolfs and member not in blackwolf:
-            channel = client.get_channel(channels['ma sói'])
-            perms = channel.overwrites_for(member)
+            werewolf_channel = client.get_channel(channels['ma sói'])
+            perms = werewolf_channel.overwrites_for(member)
             perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
+            await werewolf_channel.set_permissions(member, overwrite=perms)
             werewolfs.remove(member)
         elif member in couples and member not in werewolfs:
-            channel = client.get_channel(channels['couple'])
-            perms = channel.overwrites_for(member)
+            couple_channel = client.get_channel(channels['couple'])
+            perms = couple_channel.overwrites_for(member)
             perms.view_channel = False
-            await channel.set_permissions(member, overwrite= perms)
+            await couple_channel.set_permissions(member, overwrite= perms)
             couples.remove(member)
             if len(couples) == 1:
-                await thubai(ctx, couples[0])
+                for member in couples:
+                    await thubai(ctx, member)
         elif member in couples and member in werewolfs:
             couple_channel = client.get_channel(channels['couple'])
             perms_couple = couple_channel.overwrites_for(member)
@@ -518,7 +538,8 @@ async def ketqua(ctx):
             await werewolf_channel.set_permissions(member, overwrite=perms_werewolf)
             werewolfs.remove(member)
             if len(couples) == 1:
-                await thubai(ctx, couples[0])
+                for member in couples:
+                    await thubai(ctx, member)
         elif member in blackwolf:
             werewolf_channel = client.get_channel(channels['ma sói'])
             perms_werewolf = werewolf_channel.overwrites_for(member)
@@ -543,12 +564,13 @@ async def ketqua(ctx):
             await channel.set_permissions(member, overwrite=perms)
             curseguy.remove(member)
             werewolfs.remove(member)
-        elif member in guard and member not in guard:
+        elif member in guard and member not in werewolfs:
             channel = client.get_channel(channels['bảo vệ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             guard.remove(member)
+            list_guarded.clear()
         elif member in guard and member in werewolfs:
             channel = client.get_channel(channels['bảo vệ'])
             perms = channel.overwrites_for(member)
@@ -556,6 +578,7 @@ async def ketqua(ctx):
             await channel.set_permissions(member, overwrite=perms)
             guard.remove(member)
             werewolfs.remove(member)
+            list_guarded.clear()
         elif member in witch and member not in werewolfs:
             channel = client.get_channel(channels['phù thuỷ'])
             perms = channel.overwrites_for(member)
@@ -613,12 +636,14 @@ async def ketqua(ctx):
     elif isdone == False:
         await general.send("Sáng nay không ai chết vì không có biểu quyết!")
 
-    if len(werewolfs) == len(dict_player)//2 and endgame == False:
+    if len(werewolfs) == (len(dict_player) - len(werewolfs)) and len(werewolfs) != 0 and endgame == False:
         await general.send("Endgame, Sói thắng bởi vì số sói hiện tại bằng số dân!")
+        await mod(ctx)
         await reset(ctx)
         endgame = True
     if len(werewolfs) == 0 and endgame == False:
         await general.send("Endgame, Dân thắng!")
+        await mod(ctx)
         await reset(ctx)
         endgame = True
 
@@ -627,6 +652,7 @@ async def ketqua(ctx):
         if (player1 in werewolfs and player2 not in werewolfs) or (player1 not in werewolfs and player2 in werewolfs):
             if len(couples) == len(dict_player)//2:
                 await general.send("Endgame, Cặp đôi phe thứ 3 chiến thắng!")
+                await mod(ctx)
                 await reset(ctx)
                 endgame = True
 
@@ -653,8 +679,7 @@ async def ketqua(ctx):
 async def ghepdoi(ctx, arg1, arg2):
     global couples, iscupid, turn
     general = client.get_channel(channels['thảo luận'])
-
-    couples_channel = client.get_channel(channels['couple'])
+    couple_channel = client.get_channel(channels['couple'])
     cupid_channel = client.get_channel(channels['cupid'])
     if dict_role_player[ctx.author] == "Cupid" and iscupid == False:
         if int(arg1) > num_players or int(arg2) > num_players:
@@ -667,22 +692,24 @@ async def ghepdoi(ctx, arg1, arg2):
             couples.append(player1)
             couples.append(player2)
             for couple in couples:
-                perms = couples_channel.overwrites_for(couple)
+                perms = couple_channel.overwrites_for(couple)
                 perms.view_channel = True
-                await couples_channel.set_permissions(couple, overwrite=perms)
+                await couple_channel.set_permissions(couple, overwrite=perms)
             await cupid_channel.send(f"Bạn đã ghép Player {dict_player[int(arg1)].display_name} và Player {dict_player[int(arg2)].display_name} thành một cặp")
-            await couples_channel.send(f"Cupid đã ghép Player {dict_player[int(arg1)].mention} và Player {dict_player[int(arg2)].mention} thành một cặp")
+            await couple_channel.send(f"Cupid đã ghép Player {dict_player[int(arg1)].mention} và Player {dict_player[int(arg2)].mention} thành một cặp")
             iscupid = True
             await turnround(ctx, 2)
     elif dict_role_player[ctx.author] != "Cupid":
         await ctx.message.author.send("Bạn không phải là cupid để ghép đượp cặp đôi")
     elif iscupid:
         await ctx.message.author.send("Cupid đã ghép cặp đôi cho mình rồi!")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Quản trò")
 async def thubai(ctx, member: discord.Member):
-    global kick, dict_player, dict_num_player, endgame
+    global kick, dict_player, dict_num_player, list_guarded, hunter_list, endgame, startgame, couples, blackwolf, curseguy, guard, witch, seer, hunter, cupid
     general = client.get_channel(channels['thảo luận'])
     role = get(ctx.guild.roles, name="Werewolf player")
     if dict_num_player[member] in dict_player:
@@ -703,7 +730,8 @@ async def thubai(ctx, member: discord.Member):
             await channel.set_permissions(member, overwrite= perms)
             couples.remove(member)
             if len(couples) == 1:
-                await thubai(ctx, couples[0])
+                for member in couples:
+                    await thubai(ctx, member)
         elif member in couples and member in werewolfs:
             couple_channel = client.get_channel(channels['couple'])
             perms_couple = couple_channel.overwrites_for(member)
@@ -716,7 +744,8 @@ async def thubai(ctx, member: discord.Member):
             await werewolf_channel.set_permissions(member, overwrite=perms_werewolf)
             werewolfs.remove(member)
             if len(couples) == 1:
-                await thubai(ctx, couples[0])
+                for member in couples:
+                    await thubai(ctx, member)
         elif member in blackwolf:
             channel = client.get_channel(channels['sói nguyền'])
             perms = channel.overwrites_for(member)
@@ -737,17 +766,19 @@ async def thubai(ctx, member: discord.Member):
             await channel.set_permissions(member, overwrite=perms)
             curseguy.remove(member)
             werewolfs.remove(member)
-        elif member in guard and member not in guard:
+        elif member in guard and member not in werewolfs:
             channel = client.get_channel(channels['bảo vệ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
+            list_guarded = [0]
             guard.remove(member)
         elif member in guard and member in werewolfs:
             channel = client.get_channel(channels['bảo vệ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
+            list_guarded = [0]
             guard.remove(member)
             werewolfs.remove(member)
         elif member in witch and member not in werewolfs:
@@ -782,6 +813,7 @@ async def thubai(ctx, member: discord.Member):
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             hunter.remove(member)
+            await thubai(ctx, hunter_list[-1])
         elif member in hunter and member in werewolfs:
             channel = client.get_channel(channels['thợ săn'])
             perms = channel.overwrites_for(member)
@@ -789,6 +821,7 @@ async def thubai(ctx, member: discord.Member):
             await channel.set_permissions(member, overwrite=perms)
             hunter.remove(member) 
             werewolfs.remove(member)
+            await thubai(ctx, hunter_list[-1])
         elif member in cupid and member not in werewolfs:
             channel = client.get_channel(channels['cupid'])
             perms = channel.overwrites_for(member)
@@ -805,21 +838,24 @@ async def thubai(ctx, member: discord.Member):
     else:
         await general.send("Player không hợp lệ")
 
-    if len(werewolfs) == len(dict_player)//2 and endgame == False:
+    if len(werewolfs) == (len(dict_player) - len(werewolfs)) and endgame == False and len(werewolfs) != 0:
         await general.send("Endgame, Sói thắng bởi vì số sói hiện tại bằng số dân!")
+        await mod(ctx)
         await reset(ctx)
         endgame = True
 
     if len(werewolfs) == 0 and endgame == False:
         await general.send("Endgame, Dân thắng!")
+        await mod(ctx)
         await reset(ctx)
         endgame = True
 
-    if len(cupid) != 0 and endgame == False:
+    if len(couples) == 2 and endgame == False:
         player1, player2 = couples
         if (player1 in werewolfs and player2 not in werewolfs) or (player1 not in werewolfs and player2 in werewolfs):
             if len(couples) == len(dict_player)//2:
                 await general.send("Endgame, Cặp đôi phe thứ 3 chiến thắng!")
+                await mod(ctx)
                 await reset(ctx)
                 endgame = True
 
@@ -836,18 +872,20 @@ async def danhsach(ctx):
     else:
         await ctx.send("Game chưa bắt đầu")
 
+
 @client.command()
 @commands.has_role("Quản trò")
 async def mod(ctx):
     global dict_role_player
+    general = client.get_channel(channels['thảo luận'])
     role_player = dict_role_player.keys()
     if len(role_player) != 0:
         embed = discord.Embed(title="Role player", colour=discord.Color.green())
         for i in role_player:
             embed.add_field(name = f"Player", value = f"Number: {dict_num_player[i]}   -   Name: {i.display_name}   -   Role: {dict_role_player[i]}", inline= False)
-        await ctx.send(embed = embed)
+        await general.send(embed = embed)
     else:
-        await ctx.send("Game chưa bắt đầu")
+        await general.send("Game chưa bắt đầu")
 
 @client.command()
 @commands.has_role("Quản trò")
@@ -999,7 +1037,9 @@ async def unmute_cupid(ctx):
 @commands.has_role("Quản trò")
 async def thaoluan(ctx):
     general = client.get_channel(channels['thảo luận'])
-    await general.send("Thời gian thảo luận bắt đầu!")
+    global voting_time
+    voting_time = True
+    await general.send("Thời gian thảo luận và vote bắt đầu!")
 
 @client.command()
 @commands.has_role("Quản trò")
@@ -1018,24 +1058,19 @@ async def songhoacchet(ctx):
 @client.command()
 @commands.has_role("Quản trò")
 async def makeww(ctx, member: discord.Member):
-    global player_death
-    werewolfs.append(dict_player[player_death])
-    werewolf_channel = client.get_channel(channels['ma sói'])
-    perms = werewolf_channel.overwrites_for(dict_player[player_death])
-    perms.view_channel = True
-    await werewolf_channel.set_permissions(dict_player[player_death], overwrite=perms)
     dm_channel = await member.create_dm()
-    await dm_channel.send("Bạn đã hoá sói!")
+    await unmute_werewolf(ctx)
+    await dm_channel.send("Bạn đã hoá sói!, Bạn sẽ thấy channel của ma sói vào đêm sau!")
 
 @client.command()
 @commands.has_role("Werewolf player")
-async def can(ctx, member: discord.Member):
-    num_player = dict_num_player[member]
-    global list_target, list_werewolf_select, player_death, werewolfs
+async def can(ctx, num_player):
+    global list_target, list_werewolf_select, player_death, werewolfs, list_guarded, curseguyww, witch_rescure, info_death, isblackwolf
+    num_player = int(num_player)
     if ctx.author not in list_werewolf_select and ctx.author in werewolfs and num_player in dict_player:
         list_werewolf_select.append(ctx.author)
         list_target.append(num_player)
-        await ctx.send(f"{ctx.author.name} đã chọn Player {num_player} là người để cắn!")
+        await ctx.send(f"{ctx.author.display_name} đã chọn Player {dict_player[num_player].display_name} là người để cắn!")
     elif ctx.author in list_werewolf_select and ctx.author in werewolfs and num_player in dict_player:
         await ctx.send("Bạn đã chọn người để cắn rồi!, Không thể chọn lại")
     elif ctx.author not in werewolfs:
@@ -1044,23 +1079,91 @@ async def can(ctx, member: discord.Member):
         await ctx.send("Player không hợp lệ, Vui lòng chọn lại người để cắn")
     if len(list_target) == len(werewolfs):
         targeted = check_player(list_target)
-        await ctx.send(f"Lấy theo số đông, Người bị đàn sói cắn đêm nay là Player số {targeted}")
+        if targeted == None:
+            await ctx.send(f"Sẽ không có người chết bởi sói vì sói không thống nhất ý kiến")
+        else:
+            await ctx.send(f"Lấy theo số đông, Người bị đàn sói cắn đêm nay là Player {dict_player[targeted].display_name}")
         if targeted is None:
             player_death = None
-        elif dict_role_player[targeted] == "Bán sói" and targeted != list_guarded[-1]:
-            player_death = None
-            await makeww(ctx, dict_player[targeted])
-        elif targeted == list_guarded[-1]:
-            player_death = None
         else:
-            player_death = targeted
+            if "Bảo vệ" in dict_role_player.values() and "Bán sói" in dict_role_player.values():
+                if dict_num_role[targeted] == "Bán sói" and list_guarded[-1] != targeted and curseguyww == False:
+                    werewolfs.append(dict_player[targeted])
+                    werewolf_channel = client.get_channel(channels['ma sói'])
+                    perms = werewolf_channel.overwrites_for(dict_player[targeted])
+                    perms.view_channel = True
+                    await werewolf_channel.set_permissions(dict_player[targeted], overwrite=perms)
+                    await makeww(ctx, dict_player[targeted])
+                    player_death = None
+                    curseguyww = True
+                elif list_guarded[-1] == targeted:
+                    player_death = None
+                else:
+                    player_death = targeted
+                    if "Sói nguyền" in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0 and isblackwolf == True:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" not in roles_in_game:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" in roles_in_game and "Phù thuỷ" not in roles_in_game and isblackwolf == True:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0:
+                        info_death.append(dict_player[player_death]) 
+            elif "Bảo vệ" in dict_role_player.values() and "Bán sói" not in dict_role_player.values():
+                if targeted == list_guarded[-1]:
+                    player_death = None
+                else:
+                    player_death = targeted
+                    if "Sói nguyền" in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0 and isblackwolf == True:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" not in roles_in_game:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" in roles_in_game and "Phù thuỷ" not in roles_in_game and isblackwolf == True:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0:
+                        info_death.append(dict_player[player_death])
+            elif "Bảo vệ" not in dict_role_player.values() and "Bán sói" in dict_role_player.values():
+                if dict_num_role[targeted] == "Bán sói" and curseguyww == False:
+                    werewolfs.append(dict_player[targeted])
+                    werewolf_channel = client.get_channel(channels['ma sói'])
+                    perms = werewolf_channel.overwrites_for(dict_player[targeted])
+                    perms.view_channel = True
+                    await werewolf_channel.set_permissions(dict_player[targeted], overwrite=perms)
+                    await makeww(ctx, dict_player[targeted])
+                    player_death = None
+                    curseguyww = True
+                else:
+                    player_death = targeted
+                    if "Sói nguyền" in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0 and isblackwolf == True:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" not in roles_in_game:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" in roles_in_game and "Phù thuỷ" not in roles_in_game and isblackwolf == True:
+                        info_death.append(dict_player[player_death])
+                    elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0:
+                        info_death.append(dict_player[player_death])                      
+            elif "Bảo vệ" not in dict_role_player.values() and "Bán sói" not in dict_role_player.values():
+                player_death = targeted
+                if "Sói nguyền" in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0 and isblackwolf == True:
+                    info_death.append(dict_player[player_death])
+                elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" not in roles_in_game:
+                    info_death.append(dict_player[player_death])
+                elif "Sói nguyền" in roles_in_game and "Phù thuỷ" not in roles_in_game and isblackwolf == True:
+                    info_death.append(dict_player[player_death])
+                elif "Sói nguyền" not in roles_in_game and "Phù thuỷ" in roles_in_game and witch_rescure == 0:
+                    info_death.append(dict_player[player_death])                
+    await ctx.message.delete()
 
 @client.command()
 @commands.has_role("Werewolf player")
 async def nguyen(ctx):
     global isblackwolf, player_death
-    witch_channel = client.get_channel(channels['phù thuỷ'])
     if isblackwolf == False and player_death is not None and ctx.author in blackwolf:
+        await ctx.send(f"Bạn đã nguyền Player {dict_player[player_death].display_name} thành sói, Họ sẽ dậy cùng sói và đêm tiếp theo!.")
+        werewolfs.append(dict_player[player_death])
+        werewolf_channel = client.get_channel(channels['ma sói'])
+        perms = werewolf_channel.overwrites_for(dict_player[player_death])
+        perms.view_channel = True
+        await werewolf_channel.set_permissions(dict_player[player_death], overwrite=perms)
         await makeww(ctx, dict_player[player_death])
         isblackwolf = True
         player_death = None
@@ -1070,88 +1173,111 @@ async def nguyen(ctx):
         await ctx.send("Bạn không thể nguyền người này thành sói!")
     elif ctx.author not in blackwolf:
         await ctx.send("Bạn không phải là sói nguyền!")
+    await ctx.message.delete()
 
-    
+
 @client.command()
 @commands.has_role("Werewolf player")
 async def khongnguyen(ctx):
-    channel = client.get_channel(channels['phù thuỷ'])
-    if ctx.author in blackwolf and isblackwolf and player_death is not None:
+    global player_death
+    if ctx.author in blackwolf and isblackwolf == False and player_death is not None:
         await ctx.send("Bạn quyết định không nguyền!")
     elif ctx.author not in blackwolf:
         await ctx.send("Bạn không phải là sói nguyền!")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
-async def baove(ctx, member: discord.Member):
-    num_player = dict_num_player[member]
+async def baove(ctx, num_player):
+    num_player = int(num_player)
     global list_guarded, guarded, turn
     if guarded == False and dict_role_player[ctx.author] == "Bảo vệ" and num_player in dict_player:
-        if num_player == list_guarded[-1] and guarded == False:
-            await ctx.send("Bạn đã bảo vệ người này ở đêm trước!")
-        else:
+        member = dict_player[num_player]
+        if len(list_guarded) == 0:
             list_guarded.append(num_player)
             guarded = True
-            await ctx.send(f"Bạn đã bảo vệ Player số {num_player}")
+            await ctx.send(f"Bạn đã bảo vệ Player {member.display_name}")
+        if len(list_guarded) >= 1 and num_player == list_guarded[-1]:
+            await ctx.send("Bạn đã bảo vệ một người vào đêm trước, không thể bảo vệ một người 2 đêm liên tục")
+        elif len(list_guarded) >= 1 and num_player != list_guarded[-1]:
+            list_guarded.append(num_player)
+            guarded = True
+            await ctx.send(f"Bạn đã bảo vệ Player {member.display_name}")
     elif guarded == True and dict_role_player[ctx.author] == "Bảo vệ":
         await ctx.send("Bạn đã bảo vệ một người vào đêm nay rồi!, Không thể bảo vệ người khác")
     elif dict_role_player[ctx.author] != "Bảo vệ":
         await ctx.send("Bạn không phải là bảo vệ!")
     elif guarded == False and num_player not in dict_player:
         await ctx.send("Player không hợp lệ, mời bạn chọn lại!")
+    await ctx.message.delete()
 
 @client.command()
 @commands.has_role("Werewolf player")
-async def tientri(ctx, member: discord.Member):
-    if ctx.author in seer and isseer == False:
+async def tientri(ctx, num_player):
+    global isseer
+    num_player = int(num_player)
+    if ctx.author in seer and isseer == False and num_player in dict_player:
+        member = dict_player[num_player]
         if member in werewolfs:
-            await ctx.send("Người này thuộc phe sói!")
+            await ctx.send(f"{member.display_name} thuộc phe sói!")
         else:
-            await ctx.send("Người này thuộc phe dân làng!")
+            await ctx.send(f"{member.display_name} thuộc phe dân làng!")
     elif ctx.author in seer and isseer == True:
         await ctx.send("Bạn đã soi một người vào đêm nay rồi!")
+    elif ctx.author in seer and isseer == False and num_player not in dict_player:
+        await ctx.send("Player không hợp lệ")
     elif ctx.author not in seer:
         await ctx.send("Bạn không phải là tiên tri")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
 async def cuu(ctx):
     global player_death, witch_rescure, info_death
-    if ctx.author in witch and witch_rescure > 0:
-        await ctx.send(f"Bạn đã cứu Player số {player_death}!")
+    if ctx.author in witch and witch_rescure > 0 and player_death != None:
+        await ctx.send(f"Bạn đã cứu Player {dict_player[player_death].display_name}!")
         witch_rescure -= 1
-    elif ctx.author in witch and witch_rescure == 0:
+        info_death.clear()
+    elif ctx.author in witch and witch_rescure == 0 and player_death != None:
         await ctx.send(f"Bạn đã dùng hết bình cứu!")
-        info_death.append(dict_player[player_death])
     elif ctx.author not in witch:
         await ctx.send("Bạn không phải là phù thuỷ!")
+    await ctx.message.delete()
+
         
 @client.command()
 @commands.has_role("Werewolf player")
 async def khongcuu(ctx):
     global player_death, witch_rescure, info_death
-    if ctx.author in witch and witch_rescure > 0:
+    if ctx.author in witch and witch_rescure > 0 and player_death is not None:
         await ctx.send(f"Bạn đã không sử dụng bình cứu")
-        info_death.append(dict_player[player_death])
     elif ctx.author in witch and witch_rescure == 0:
         await ctx.send(f"Bạn đã dùng hết bình cứu!")
-        info_death.append(dict_player[player_death])
     elif ctx.author not in witch:
         await ctx.send("Bạn không phải là phù thuỷ!")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
-async def giet(ctx, member: discord.Member):
-    num_player = dict_num_player[member]
+async def giet(ctx, num_player):
+    num_player = int(num_player)
     global player_death, witch_kill, info_death
     if ctx.author in witch and witch_kill > 0 and num_player in dict_player:
-        await ctx.send(f"Bạn đã quăng bình giết Player số {num_player}")
+        member = dict_player[num_player]
+        await ctx.send(f"Bạn đã quăng bình giết {member.display_name}")
         witch_kill -= 1
         info_death.append(member)
     elif ctx.author in witch and witch_kill == 0 and num_player in dict_player:
         await ctx.send("Bạn đã dùng hết bình giết")
+    elif ctx.author in witch and witch_kill > 0 and num_player not in dict_player:
+        await ctx.send("Player không hợp lệ")
     elif ctx.author not in witch:
         await ctx.send("Bạn không phải là phù thuỷ!")
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Werewolf player")
@@ -1162,25 +1288,32 @@ async def khonggiet(ctx):
         await ctx.send("Bạn đã hết bình giết")
     elif ctx.author not in witch:
         await ctx.send("Bạn không phải là phù thuỷ!")
+    await ctx.message.delete()
 
 
 @client.command()
 @commands.has_role("Werewolf player")
-async def ghim(ctx, member: discord.Member):
+async def ghim(ctx, num_player):
     global hunter_list, fire
-    if ctx.author in hunter and fire == False:
+    num_player = int(num_player)
+    if ctx.author in hunter and fire == False and num_player in dict_player:
+        member = dict_player[num_player]
         await ctx.send(f"Bạn đã chọn {member.display_name} làm mục tiêu. Nếu bạn chết thì {member.display_name} sẽ chết cùng bạn")
         hunter_list.append(member)
         fire = True
-    if ctx.author in hunter and fire == True:
+    elif ctx.author in hunter and fire == True:
         await ctx.send("Bạn đã chọn mục tiêu vào đêm nay rồi!.")
+    elif ctx.author in hunter and fire == False and num_player not in dict_player:
+        await ctx.send("Player không hợp lệ")
     elif ctx.author not in hunter:
         await ctx.send("Bạn không phải là thợ săn")
+    await ctx.message.delete()
 
-@client.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('Bạn không phải là quản trò hoặc bạn không tham gia vào game để dùng lệnh này!.')
+
+# @client.event
+# async def on_command_error(ctx, error):
+#     if isinstance(error, commands.errors.CheckFailure):
+#         await ctx.send('Bạn không phải là quản trò hoặc bạn không tham gia vào game để dùng lệnh này!.')
 
 @client.command()
 async def help(ctx):
@@ -1189,7 +1322,7 @@ async def help(ctx):
     embed.add_field(name = "$quit", value = "Ngược lại với lệnh play, hạn chế dùng lệnh này @@!")
     embed.add_field(name = "$getrole", value = "Lệnh này dùng để nhận chức năng trong game, sau khi quản trò bắt đầu game!")
     embed.add_field(name = "$skipvote", value= "Lệnh này dùng để skip vote nếu không biết vote ai cả")
-    embed.add_field(name = "$vote [number player]", value = "Lệnh này dùng để biểu quyết 1 player nào đó, chỉ dùng được khi trong thời gian biểu quyết")
+    embed.add_field(name = "$vote", value = "Lệnh này dùng để biểu quyết 1 player nào đó, chỉ dùng được khi trong thời gian biểu quyết")
     embed.add_field(name = "$song", value = "Lệnh này dùng để vote sống cho một người bị lên dàn nếu có, nếu bản thân bị lên dàn thì không dùng được")
     embed.add_field(name = "$chet", value = "Ngược lại với vote sống")
     embed.add_field(name = "$can", value = "Lệnh này dành cho ma sói để chọn mục tiêu")
@@ -1206,6 +1339,8 @@ async def help(ctx):
     embed.add_field(name = "$danhsach", value = "Lệnh này dùng kiểm tra danh sách player còn sống")
     embed.add_field(name = "$ghepdoi [player1] [player2]", value = "Nếu chức năng của bạn là CUPID thì bạn có thể dùng lệnh này để ghép đôi 2 người bất kỳ với nhau, Lưu ý: dùng lệnh này trong text channel của Cupid")
     await ctx.send(embed = embed)
+    await ctx.message.delete()
+
     
 
 @client.command()
@@ -1223,14 +1358,18 @@ async def modhelp(ctx):
     embed.add_field(name = "$mod", value = "Lệnh này cho quản trò biết chức năng của tất cả mọi người")
     embed.add_field(name = "$reset", value = "Lệnh này dùng để reset sau khi xong 1 game!")
     await ctx.send(embed = embed)
+    await ctx.message.delete()
+
    
 @client.command()
 @commands.has_role("Werewolf player")
 async def chucnang(ctx):
-    global roles, num_players
+    global num_players, roles_in_game
     embed = discord.Embed(title="Chức năng có trong game", colour=discord.Color.blue())
-    embed.add_field(name = f"Có {num_players} chức năng trong game", value = " - ".join(role for role in roles))
+    embed.add_field(name = f"Có {num_players} chức năng trong game", value = " - ".join(role for role in roles_in_game))
     await ctx.send(embed = embed)
+    await ctx.message.delete()
+
 
 @client.command()
 @commands.has_role("Quản trò")
@@ -1337,7 +1476,7 @@ async def mute_general(ctx):
     for member in dict_player.values():
         channel = client.get_channel(channels['thảo luận'])
         perms = channel.overwrites_for(member)
-        perms.view_channel = False
+        perms.send_messages = False
         await channel.set_permissions(member, overwrite=perms)
     
 @client.command()
@@ -1346,123 +1485,239 @@ async def unmute_general(ctx):
     for member in dict_player.values():
         channel = client.get_channel(channels['thảo luận'])
         perms = channel.overwrites_for(member)
-        perms.view_channel = True
+        perms.send_messages = True
         await channel.set_permissions(member, overwrite=perms)
 
 @client.command()
 @commands.has_role("Quản trò")
 async def turnround(ctx, index):
-    global player_death, witch_rescure, witch_kill, info_death
-    general = client.get_channel(channels['thảo luận'])
+    global player_death, witch_rescure, witch_kill, info_death, roles_in_game, werewolfs, list_vote_player
+    werewolf_channel = client.get_channel(channels['ma sói'])
+    blackwolf_channel = client.get_channel(channels['sói nguyền'])
+    guard_channel = client.get_channel(channels['bảo vệ'])
+    seer_channel = client.get_channel(channels['tiên tri'])
+    hunter_channel = client.get_channel(channels['thợ săn'])
+    cupid_channel = client.get_channel(channels['cupid'])
+    couple_channel = client.get_channel(channels['couple'])
     witch_channel = client.get_channel(channels['phù thuỷ'])
+    general = client.get_channel(channels['thảo luận'])
+    role = get(ctx.guild.roles, name="Werewolf player")
     if index == 1:
         await mute_general(ctx)
         await mute(ctx)
-        await unmute_guard(ctx)
-        await asyncio.sleep(15)
-        await mute_guard(ctx)
-        await unmute_werewolf(ctx)
-        await asyncio.sleep(30)
-        await mute_werewolf(ctx)
-        await unmute_blackwolf(ctx)
-        await asyncio.sleep(15)
-        await mute_blackwolf(ctx)
-        await unmute_witch(ctx)
-        if player_death == None:
-            await witch_channel.send(f"Đêm nay không ai chết. Bạn có muốn giết thêm ai không?. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
-        else:
-            await witch_channel.send(f"Đêm nay {dict_player[player_death].name} bị giết. Bạn muốn cứu thì $cuu còn không thì $khongcuu Bạn có muốn giết thêm ai thì $giet còn không thì $khongcuu. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
-        await asyncio.sleep(15)
-        await mute_witch(ctx)
-        await unmute_seer(ctx)
-        await asyncio.sleep(15)
-        await mute_seer(ctx)
-        await unmute_hunter(ctx)
-        await asyncio.sleep(15)
-        await mute_hunter(ctx)
-        await unmute_couple(ctx)
-        await asyncio.sleep(30)
-        await mute_couple(ctx)
+        if "Bảo vệ" in roles_in_game:
+            await unmute_guard(ctx)
+            for member in guard:
+                await guard_channel.send(member.mention)
+            await guard_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(guard_channel)
+            await asyncio.sleep(30)
+            await mute_guard(ctx)
+        if "Sói thường" in roles_in_game or "Sói nguyền" in roles_in_game:
+            await unmute_werewolf(ctx)
+            for member in werewolfs:
+                await werewolf_channel.send(member.mention)
+            await werewolf_channel.send("Bạn có 45s để dùng lệnh ở trong này!")
+            await danhsach(werewolf_channel)
+            await asyncio.sleep(45)
+            await mute_werewolf(ctx)
+        if "Sói nguyền" in roles_in_game:
+            await unmute_blackwolf(ctx)
+            for member in blackwolf:
+                await blackwolf_channel.send(member.mention)
+            await blackwolf_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(blackwolf_channel)
+            await asyncio.sleep(30)
+            await mute_blackwolf(ctx)
+        if "Phù thuỷ" in roles_in_game:
+            await unmute_witch(ctx)
+            for member in witch:
+                await witch_channel.send(member.mention)
+            await witch_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(witch_channel)
+            if player_death == None:
+                await witch_channel.send(f"Đêm nay không ai chết. Bạn có muốn giết thêm ai không?. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
+            else:
+                await witch_channel.send(f"Đêm nay {dict_player[player_death].name} bị giết. Bạn muốn cứu thì $cuu còn không thì $khongcuu Bạn có muốn giết thêm ai thì $giet còn không thì $khongcuu. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
+            await asyncio.sleep(30)
+            await mute_witch(ctx)
+            if witch_rescure == 1 and player_death != None:
+                info_death.append(dict_player[player_death])
+        if "Tiên tri" in roles_in_game:
+            await unmute_seer(ctx)
+            for member in seer:
+                await seer_channel.send(member.mention)
+            await seer_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(seer_channel)
+            await asyncio.sleep(30)
+            await mute_seer(ctx)
+        if "Thợ săn" in roles_in_game:
+            await unmute_hunter(ctx)
+            for member in hunter:
+                await hunter_channel.send(member.mention)
+            await hunter_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(hunter_channel)
+            await asyncio.sleep(30)
+            await mute_hunter(ctx)
+        if "Cupid" in roles_in_game:
+            await unmute_couple(ctx)
+            for member in couples:
+                await couple_channel.send(member.mention)
+            await couple_channel.send("Bạn có 60s để thảo luận!")
+            await danhsach(couple_channel)
+            await asyncio.sleep(60)
+            await mute_couple(ctx)
         await unmute_general(ctx)
+        await general.send(role.mention)
         if len(info_death) != 0:
-            for index in info_death:
-                await thubai(ctx,index)
+            for member in info_death:
+                await thubai(ctx, member)
         else:
             await general.send("Sáng nay không ai chết!")
-        await thaoluan(ctx)
-        await asyncio.sleep(300)
-        await general.send("Hết thời gian thảo luận, mọi người có 1 phút để chọn 1 người lên dàn bằng lệnh $vote hoặc $skipvote nếu muốn bỏ vote!")
-        await voting(ctx)
-        await asyncio.sleep(60)
-        await general.send("Hết thời gian vote!")
-        await kiemtra(ctx)
-        if isdone == True:
-            await asyncio.sleep(5)
-            await songhoacchet(ctx)
-            await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
-            await asyncio.sleep(60)
-            await general.send("Hết thời gian biểu quyết sống hoặc chết")
-            await ketqua(ctx)
-        elif isdone == False:
-            await ketqua(ctx)
+        if endgame == False:
+            await thaoluan(ctx)
+            await general.send("Bạn có 180s để thảo luận và để chọn 1 người lên dàn bằng lệnh $vote hoặc $skipvote nếu muốn bỏ vote!")
+            await danhsach(general)
+            for i in range(180):
+                await asyncio.sleep(1)
+                if len(list_vote_player) == len(dict_player):
+                    await general.send("Mọi người đã vote xong hết!")
+                    await kiemtra(ctx)
+                    break
+            await general.send("Hết thời gian vote!")
+            await general.send(role.mention)
+            await kiemtra(ctx)
+            if isdone == True:
+                await asyncio.sleep(5)
+                await songhoacchet(ctx)
+                await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
+                for i in range(60):
+                    await asyncio.sleep(1)
+                    if len(live_death) == len(dict_player)-1:
+                        await general.send("Mọi người đã vote xong hết!")
+                        await asyncio.sleep(5)
+                        await ketqua(ctx)
+                        break
+                await general.send("Hết thời gian biểu quyết sống hoặc chết")
+                await general.send(role.mention)
+                await asyncio.sleep(5)
+                await ketqua(ctx)
+            elif isdone == False:
+                await ketqua(ctx)
     if index == 0:
         await mute_general(ctx)
         await mute(ctx)
         await unmute_cupid(ctx)
+        for member in cupid:
+            await cupid_channel.send(member.mention)
+        await cupid_channel.send("Mời bạn chọn cặp đôi cho mình!")
+        await danhsach(cupid_channel)
     if index == 2:
         await mute_cupid(ctx)
         await unmute_couple(ctx)
-        await asyncio.sleep(15)
-        await mute_couple(ctx)
-        await mute_general(ctx)
-        await mute(ctx)
-        await unmute_guard(ctx)
-        await asyncio.sleep(15)
-        await mute_guard(ctx)
-        await unmute_werewolf(ctx)
-        await asyncio.sleep(30)
-        await mute_werewolf(ctx)
-        await unmute_blackwolf(ctx)
-        await asyncio.sleep(15)
-        await mute_blackwolf(ctx)
-        await unmute_witch(ctx)
-        if player_death == None:
-            await witch_channel.send(f"Đêm nay không ai chết. Bạn có muốn giết thêm ai không?. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
-        else:
-            await witch_channel.send(f"Đêm nay {dict_player[player_death].name} bị giết. Bạn muốn cứu thì $cuu còn không thì $khongcuu Bạn có muốn giết thêm ai thì $giet còn không thì $khongcuu. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
-        await asyncio.sleep(15)
-        await mute_witch(ctx)
-        await unmute_seer(ctx)
-        await asyncio.sleep(15)
-        await mute_seer(ctx)
-        await unmute_hunter(ctx)
-        await asyncio.sleep(15)
-        await mute_hunter(ctx)
-        await unmute_couple(ctx)
+        await couple_channel.send("Các bạn có 30s để trao đổi về chức năng!")
         await asyncio.sleep(30)
         await mute_couple(ctx)
+        if "Bảo vệ" in roles_in_game:
+            await unmute_guard(ctx)
+            for member in guard:
+                await guard_channel.send(member.mention)
+            await guard_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(guard_channel)
+            await asyncio.sleep(30)
+            await mute_guard(ctx)
+        if "Sói thường" in roles_in_game or "Sói nguyền" in roles_in_game:
+            await unmute_werewolf(ctx)
+            for member in werewolfs:
+                await werewolf_channel.send(member.mention)
+            await werewolf_channel.send("Bạn có 45s để dùng lệnh ở trong này!")
+            await danhsach(werewolf_channel)
+            await asyncio.sleep(45)
+            await mute_werewolf(ctx)
+        if "Sói nguyền" in roles_in_game:
+            await unmute_blackwolf(ctx)
+            for member in blackwolf:
+                await blackwolf_channel.send(member.mention)
+            await blackwolf_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(blackwolf_channel)
+            await asyncio.sleep(30)
+            await mute_blackwolf(ctx)
+        if "Phù thuỷ" in roles_in_game:
+            await unmute_witch(ctx)
+            for member in witch:
+                await witch_channel.send(member.mention)
+            await witch_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(witch_channel)
+            if player_death == None:
+                await witch_channel.send(f"Đêm nay không ai chết. Bạn có muốn giết thêm ai không?. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
+            else:
+                await witch_channel.send(f"Đêm nay {dict_player[player_death].name} bị giết. Bạn muốn cứu thì $cuu còn không thì $khongcuu Bạn có muốn giết thêm ai thì $giet còn không thì $khongcuu. Số bình hiện tại của bạn là {witch_rescure} bình cứu, {witch_kill} bình giết!")
+            await asyncio.sleep(30)
+            await mute_witch(ctx)
+            if witch_rescure == 1 and player_death != None:
+                info_death.append(dict_player[player_death])
+        if "Tiên tri" in roles_in_game:
+            await unmute_seer(ctx)
+            for member in seer:
+                await seer_channel.send(member.mention)
+            await seer_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(seer_channel)
+            await asyncio.sleep(30)
+            await mute_seer(ctx)
+        if "Thợ săn" in roles_in_game:
+            await unmute_hunter(ctx)
+            for member in hunter:
+                await hunter_channel.send(member.mention)
+            await hunter_channel.send("Bạn có 30s để dùng lệnh ở trong này!")
+            await danhsach(hunter_channel)
+            await asyncio.sleep(30)
+            await mute_hunter(ctx)
+        if "Cupid" in roles_in_game:
+            await unmute_couple(ctx)
+            for member in couples:
+                await couple_channel.send(member.mention)
+            await couple_channel.send("Bạn có 60s để thảo luận!")
+            await danhsach(couple_channel)
+            await asyncio.sleep(60)
+            await mute_couple(ctx)
         await unmute_general(ctx)
+        await general.send(role.mention)
         if len(info_death) != 0:
-            for index in info_death:
-                await thubai(ctx,index)
+            for member in info_death:
+                await thubai(ctx, member)
         else:
             await general.send("Sáng nay không ai chết!")
-        await thaoluan(ctx)
-        await asyncio.sleep(300)
-        await general.send("Hết thời gian thảo luận, mọi người có 1 phút để chọn 1 người lên dàn bằng lệnh $vote hoặc $skipvote nếu muốn bỏ vote!")
-        await voting(ctx)
-        await asyncio.sleep(60)
-        await general.send("Hết thời gian vote!")
-        await kiemtra(ctx)
-        if isdone == True:
-            await asyncio.sleep(5)
-            await songhoacchet(ctx)
-            await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
-            await asyncio.sleep(60)
-            await general.send("Hết thời gian biểu quyết sống hoặc chết")
-            await ketqua(ctx)
-        elif isdone == False:
-            await ketqua(ctx)
+        if endgame == False:
+            await thaoluan(ctx)
+            await general.send("Bạn có 180s để thảo luận và để chọn 1 người lên dàn bằng lệnh $vote hoặc $skipvote nếu muốn bỏ vote!")
+            await danhsach(general)
+            for i in range(180):
+                await asyncio.sleep(1)
+                if len(list_vote_player) == len(dict_player):
+                    await general.send("Mọi người đã vote xong hết!")
+                    await kiemtra(ctx)
+                    break
+            await general.send("Hết thời gian vote!")
+            await general.send(role.mention)
+            await kiemtra(ctx)
+            if isdone == True:
+                await asyncio.sleep(5)
+                await songhoacchet(ctx)
+                await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
+                for i in range(60):
+                    await asyncio.sleep(1)
+                    if len(live_death) == len(dict_player)-1:
+                        await general.send("Mọi người đã vote xong hết!")
+                        await asyncio.sleep(5)
+                        await ketqua(ctx)
+                        break
+                await general.send("Hết thời gian biểu quyết sống hoặc chết")
+                await general.send(role.mention)
+                await asyncio.sleep(5)
+                await ketqua(ctx)
+            elif isdone == False:
+                await ketqua(ctx)
+
 
 if __name__ == '__main__':
     client.run(TOKEN)
