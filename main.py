@@ -5,6 +5,12 @@ from discord.ext import commands
 from discord.utils import get
 from settings import *
 import copy
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
@@ -69,7 +75,7 @@ def check_player(lst):
 
 @client.event
 async def on_ready():
-    print(f'{client.user.name} has connected to Discord!')
+    print(f'{client.user.display_name} has connected to Discord!')
 
 @client.command()
 async def ping(ctx):
@@ -1198,7 +1204,7 @@ async def baove(ctx, num_player):
             list_guarded.append(num_player)
             guarded = True
             await ctx.send(f"Bạn đã bảo vệ Player {member.display_name}")
-        if len(list_guarded) >= 1 and num_player == list_guarded[-1]:
+        elif len(list_guarded) >= 1 and num_player == list_guarded[-1]:
             await ctx.send("Bạn đã bảo vệ một người vào đêm trước, không thể bảo vệ một người 2 đêm liên tục")
         elif len(list_guarded) >= 1 and num_player != list_guarded[-1]:
             list_guarded.append(num_player)
@@ -1310,10 +1316,10 @@ async def ghim(ctx, num_player):
     await ctx.message.delete()
 
 
-# @client.event
-# async def on_command_error(ctx, error):
-#     if isinstance(error, commands.errors.CheckFailure):
-#         await ctx.send('Bạn không phải là quản trò hoặc bạn không tham gia vào game để dùng lệnh này!.')
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send('Bạn không phải là quản trò hoặc bạn không tham gia vào game để dùng lệnh này!.')
 
 @client.command()
 async def help(ctx):
@@ -1342,7 +1348,6 @@ async def help(ctx):
     await ctx.message.delete()
 
     
-
 @client.command()
 @commands.has_role("Quản trò")
 async def modhelp(ctx):
@@ -1582,10 +1587,12 @@ async def turnround(ctx, index):
                 await asyncio.sleep(1)
                 if len(list_vote_player) == len(dict_player):
                     await general.send("Mọi người đã vote xong hết!")
+                    await asyncio.sleep(5)
                     await kiemtra(ctx)
                     break
             await general.send("Hết thời gian vote!")
             await general.send(role.mention)
+            await asyncio.sleep(5)
             await kiemtra(ctx)
             if isdone == True:
                 await asyncio.sleep(5)
@@ -1695,10 +1702,12 @@ async def turnround(ctx, index):
                 await asyncio.sleep(1)
                 if len(list_vote_player) == len(dict_player):
                     await general.send("Mọi người đã vote xong hết!")
+                    await asyncio.sleep(5)
                     await kiemtra(ctx)
                     break
             await general.send("Hết thời gian vote!")
             await general.send(role.mention)
+            await asyncio.sleep(5)
             await kiemtra(ctx)
             if isdone == True:
                 await asyncio.sleep(5)
