@@ -7,7 +7,7 @@ from settings import *
 import copy
 import os
 from dotenv import load_dotenv
-
+from keep_alive import keep_alive
 load_dotenv()
 
 TOKEN = os.getenv('DISCORD_BOT_TOKEN')
@@ -1726,4 +1726,5 @@ async def turnround(ctx, index):
 
 
 if __name__ == '__main__':
+    keep_alive()
     client.run(TOKEN)
