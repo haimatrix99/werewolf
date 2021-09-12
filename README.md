@@ -13,6 +13,7 @@ Các đêm tiếp theo: Bảo vệ -> Đàn sói -> Sói nguyền -> Bán sói (
 -> Phù thuỷ -> Tiên tri -> Thợ săn -> Couple -> Thời gian thảo luận và vote.
 
 Từng lệnh của từng chức năng sẽ được thông báo ở khi chức năng được gọi.
+Muốn xem tất cả các lệnh có trong game thì có thể dùng lệnh $help
 
 Game kết thúc khi số Sói bằng số Dân làng hoặc không còn Sói trong dân làng. Nếu có phe thứ 3 thì phe thứ 3 thắng khi còn 4 người.
 
