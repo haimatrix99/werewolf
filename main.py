@@ -591,7 +591,6 @@ async def ketqua(ctx):
     if len(werewolfs) == 0 and endgame == False:
         await general.send("Endgame, Dân thắng!")
         await mod(ctx)
-        
         await reset(ctx)
         endgame = True
 
