@@ -162,6 +162,8 @@ async def reset(ctx):
     list_werewolf_select.clear()
     hunter_list.clear()
     roles_in_game.clear()
+    info_death.clear()
+    list_guarded = [0]
     fire = False
     turn = 0
     witch_kill = 1
@@ -180,7 +182,6 @@ async def reset(ctx):
     endgame = False
     startgame = False
     curseguyww = False
-    info_death.clear()
     await general.send("Reset game mới")
 
 @client.command()
@@ -552,6 +553,7 @@ async def ketqua(ctx):
             await channel.set_permissions(member, overwrite=perms)
             guard.remove(member)
             list_guarded.clear()
+            list_guarded = [0]
         if member in witch:
             channel = client.get_channel(channels['phù thuỷ'])
             perms = channel.overwrites_for(member)
@@ -696,6 +698,7 @@ async def thubai(ctx, member: discord.Member):
             await channel.set_permissions(member, overwrite=perms)
             guard.remove(member)
             list_guarded.clear()
+            list_guarded = [0]
         if member in witch:
             channel = client.get_channel(channels['phù thuỷ'])
             perms = channel.overwrites_for(member)
@@ -1073,13 +1076,13 @@ async def baove(ctx, num_player):
     global list_guarded, guarded, turn
     if guarded == False and dict_role_player[ctx.author] == "Bảo vệ" and num_player in dict_player:
         member = dict_player[num_player]
-        if len(list_guarded) == 0:
+        if len(list_guarded) == 1:
             list_guarded.append(num_player)
             guarded = True
             await ctx.send(f"Bạn đã bảo vệ Player {member.display_name}")
-        elif len(list_guarded) >= 1 and num_player == list_guarded[-1]:
+        elif len(list_guarded) >= 2 and num_player == list_guarded[-1]:
             await ctx.send("Bạn đã bảo vệ một người vào đêm trước, không thể bảo vệ một người 2 đêm liên tục")
-        elif len(list_guarded) >= 1 and num_player != list_guarded[-1]:
+        elif len(list_guarded) >= 2 and num_player != list_guarded[-1]:
             list_guarded.append(num_player)
             guarded = True
             await ctx.send(f"Bạn đã bảo vệ Player {member.display_name}")

@@ -65,7 +65,7 @@ global blackwolf, curseguy, guard, witch, seer, hunter, cupid
 blackwolf, curseguy, guard, witch, seer, hunter, cupid = [], [], [], [], [], [], []
 
 global list_guarded
-list_guarded = []
+list_guarded = [0]
 
 global guarded
 guarded = False
