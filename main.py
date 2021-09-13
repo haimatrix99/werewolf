@@ -519,13 +519,13 @@ async def ketqua(ctx):
         await member.remove_roles(role, atomic=False)
         dict_player.pop(player_kick)
         kick = True
-        if member in werewolfs and member not in blackwolf:
+        if member in werewolfs:
             werewolf_channel = client.get_channel(channels['ma sói'])
             perms = werewolf_channel.overwrites_for(member)
             perms.view_channel = False
             await werewolf_channel.set_permissions(member, overwrite=perms)
             werewolfs.remove(member)
-        elif member in couples and member not in werewolfs:
+        if member in couples:
             couple_channel = client.get_channel(channels['couple'])
             perms = couple_channel.overwrites_for(member)
             perms.view_channel = False
@@ -534,112 +534,51 @@ async def ketqua(ctx):
             if len(couples) == 1:
                 for member in couples:
                     await thubai(ctx, member)
-        elif member in couples and member in werewolfs:
-            couple_channel = client.get_channel(channels['couple'])
-            perms_couple = couple_channel.overwrites_for(member)
-            perms_couple.view_channel = False
-            await couple_channel.set_permissions(member, overwrite= perms_couple)
-            couples.remove(member)
-            werewolf_channel = client.get_channel(channels['ma sói'])
-            perms_werewolf = werewolf_channel.overwrites_for(member)
-            perms_werewolf.view_channel = False
-            await werewolf_channel.set_permissions(member, overwrite=perms_werewolf)
-            werewolfs.remove(member)
-            if len(couples) == 1:
-                for member in couples:
-                    await thubai(ctx, member)
-        elif member in blackwolf:
-            werewolf_channel = client.get_channel(channels['ma sói'])
-            perms_werewolf = werewolf_channel.overwrites_for(member)
-            perms_werewolf.view_channel = False
-            await werewolf_channel.set_permissions(member, overwrite=perms_werewolf)
+        if member in blackwolf:
             blackwolf_channel = client.get_channel(channels['sói nguyền'])
             perms_blackwolf = blackwolf_channel.overwrites_for(member)
             perms_blackwolf.view_channel = False
             await blackwolf_channel.set_permissions(member, overwrite=perms_blackwolf)
             blackwolf.remove(member)
             werewolfs.remove(member)
-        elif member in curseguy and member not in werewolfs:
+        if member in curseguy:
             channel = client.get_channel(channels['bán sói'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             curseguy.remove(member)
-        elif member in curseguy and member in werewolfs:
-            channel = client.get_channel(channels['bán sói'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            curseguy.remove(member)
-            werewolfs.remove(member)
-        elif member in guard and member not in werewolfs:
+        if member in guard:
             channel = client.get_channel(channels['bảo vệ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             guard.remove(member)
             list_guarded.clear()
-        elif member in guard and member in werewolfs:
-            channel = client.get_channel(channels['bảo vệ'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            guard.remove(member)
-            werewolfs.remove(member)
-            list_guarded.clear()
-        elif member in witch and member not in werewolfs:
+        if member in witch:
             channel = client.get_channel(channels['phù thuỷ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             witch.remove(member)
-        elif member in witch and member in werewolfs:
-            channel = client.get_channel(channels['phù thuỷ'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            witch.remove(member)
-            werewolfs.remove(member)
-        elif member in seer and member not in werewolfs:
+        if member in seer:
             channel = client.get_channel(channels['tiên tri'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             seer.remove(member)
-        elif member in seer and member in werewolfs:
-            channel = client.get_channel(channels['tiên tri'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            seer.remove(member)
-            werewolfs.remove(member)
-        elif member in hunter and member not in werewolfs:
+        if member in hunter:
             channel = client.get_channel(channels['thợ săn'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             hunter.remove(member)
             await thubai(ctx, hunter_list[-1])
-        elif member in hunter and member in werewolfs:
-            channel = client.get_channel(channels['thợ săn'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            hunter.remove(member) 
-            werewolfs.remove(member)
-        elif member in cupid and member not in werewolfs:
+        if member in cupid:
             channel = client.get_channel(channels['cupid'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             cupid.remove(member)
-        elif member in cupid and member in werewolfs:
-            channel = client.get_channel(channels['cupid'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            cupid.remove(member)
-            werewolfs.remove(member)
 
     elif isdone == False:
         await general.send("Sáng nay không ai chết vì không có biểu quyết!")
@@ -652,6 +591,7 @@ async def ketqua(ctx):
     if len(werewolfs) == 0 and endgame == False:
         await general.send("Endgame, Dân thắng!")
         await mod(ctx)
+        
         await reset(ctx)
         endgame = True
 
@@ -725,124 +665,66 @@ async def thubai(ctx, member: discord.Member):
         kick = True
         await member.remove_roles(role, atomic= False)
         await general.send(f"{member.mention} đã chết vào sáng hôm nay")
-        if member in werewolfs and member not in blackwolf:
-            channel = client.get_channel(channels['ma sói'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            werewolfs.remove(member)
-        elif member in couples and member not in werewolfs:
-            channel = client.get_channel(channels['couple'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite= perms)
-            couples.remove(member)
-            if len(couples) == 1:
-                for member in couples:
-                    await thubai(ctx, member)
-        elif member in couples and member in werewolfs:
-            couple_channel = client.get_channel(channels['couple'])
-            perms_couple = couple_channel.overwrites_for(member)
-            perms_couple.view_channel = False
-            await couple_channel.set_permissions(member, overwrite= perms_couple)
-            couples.remove(member)
+        if member in werewolfs:
             werewolf_channel = client.get_channel(channels['ma sói'])
-            perms_werewolf = werewolf_channel.overwrites_for(member)
-            perms_werewolf.view_channel = False
-            await werewolf_channel.set_permissions(member, overwrite=perms_werewolf)
+            perms = werewolf_channel.overwrites_for(member)
+            perms.view_channel = False
+            await werewolf_channel.set_permissions(member, overwrite=perms)
             werewolfs.remove(member)
+        if member in couples:
+            couple_channel = client.get_channel(channels['couple'])
+            perms = couple_channel.overwrites_for(member)
+            perms.view_channel = False
+            await couple_channel.set_permissions(member, overwrite= perms)
+            couples.remove(member)
             if len(couples) == 1:
                 for member in couples:
                     await thubai(ctx, member)
-        elif member in blackwolf:
-            channel = client.get_channel(channels['sói nguyền'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
+        if member in blackwolf:
+            blackwolf_channel = client.get_channel(channels['sói nguyền'])
+            perms_blackwolf = blackwolf_channel.overwrites_for(member)
+            perms_blackwolf.view_channel = False
+            await blackwolf_channel.set_permissions(member, overwrite=perms_blackwolf)
             blackwolf.remove(member)
             werewolfs.remove(member)
-        elif member in curseguy and member not in werewolfs:
+        if member in curseguy:
             channel = client.get_channel(channels['bán sói'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             curseguy.remove(member)
-        elif member in curseguy and member in werewolfs:
-            channel = client.get_channel(channels['bán sói'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            curseguy.remove(member)
-            werewolfs.remove(member)
-        elif member in guard and member not in werewolfs:
+        if member in guard:
             channel = client.get_channel(channels['bảo vệ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
-            list_guarded = [0]
             guard.remove(member)
-        elif member in guard and member in werewolfs:
-            channel = client.get_channel(channels['bảo vệ'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            list_guarded = [0]
-            guard.remove(member)
-            werewolfs.remove(member)
-        elif member in witch and member not in werewolfs:
+            list_guarded.clear()
+        if member in witch:
             channel = client.get_channel(channels['phù thuỷ'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             witch.remove(member)
-        elif member in witch and member in werewolfs:
-            channel = client.get_channel(channels['phù thuỷ'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            witch.remove(member)
-            werewolfs.remove(member)
-        elif member in seer and member not in werewolfs:
+        if member in seer:
             channel = client.get_channel(channels['tiên tri'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             seer.remove(member)
-        elif member in seer and member in werewolfs:
-            channel = client.get_channel(channels['tiên tri'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            seer.remove(member)
-            werewolfs.remove(member)
-        elif member in hunter and member not in werewolfs:
+        if member in hunter:
             channel = client.get_channel(channels['thợ săn'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             hunter.remove(member)
             await thubai(ctx, hunter_list[-1])
-        elif member in hunter and member in werewolfs:
-            channel = client.get_channel(channels['thợ săn'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            hunter.remove(member) 
-            werewolfs.remove(member)
-            await thubai(ctx, hunter_list[-1])
-        elif member in cupid and member not in werewolfs:
+        if member in cupid:
             channel = client.get_channel(channels['cupid'])
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             cupid.remove(member)
-        elif member in cupid and member in werewolfs:
-            channel = client.get_channel(channels['cupid'])
-            perms = channel.overwrites_for(member)
-            perms.view_channel = False
-            await channel.set_permissions(member, overwrite=perms)
-            cupid.remove(member)
-            werewolfs.remove(member)
     else:
         await general.send("Player không hợp lệ")
 
