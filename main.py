@@ -267,7 +267,6 @@ async def getrole(ctx):
                 perms1.view_channel = True
                 await werewolf_channel.set_permissions(ctx.author, overwrite=perms1)
 
-
                 await ctx.message.author.send("Chức năng của bạn là Sói thường")
             elif role_player == "Sói nguyền":
                 dict_num_role[player] = role_player
@@ -540,7 +539,6 @@ async def ketqua(ctx):
             perms_blackwolf.view_channel = False
             await blackwolf_channel.set_permissions(member, overwrite=perms_blackwolf)
             blackwolf.remove(member)
-            werewolfs.remove(member)
         if member in curseguy:
             channel = client.get_channel(channels['bán sói'])
             perms = channel.overwrites_for(member)
@@ -685,7 +683,6 @@ async def thubai(ctx, member: discord.Member):
             perms_blackwolf.view_channel = False
             await blackwolf_channel.set_permissions(member, overwrite=perms_blackwolf)
             blackwolf.remove(member)
-            werewolfs.remove(member)
         if member in curseguy:
             channel = client.get_channel(channels['bán sói'])
             perms = channel.overwrites_for(member)
@@ -1462,6 +1459,9 @@ async def turnround(ctx, index):
             await danhsach(general)
             for i in range(180):
                 await asyncio.sleep(1)
+                if i == 120:
+                    await general.send(role.mention)
+                    await general.send("Các bạn còn 1 phút!")
                 if len(list_vote_player) == len(dict_player):
                     await general.send("Mọi người đã vote xong hết!")
                     await asyncio.sleep(5)
@@ -1578,6 +1578,9 @@ async def turnround(ctx, index):
             await danhsach(general)
             for i in range(180):
                 await asyncio.sleep(1)
+                if i == 120:
+                    await general.send(role.mention)
+                    await general.send("Các bạn còn 1 phút!")
                 if len(list_vote_player) == len(dict_player):
                     await general.send("Mọi người đã vote xong hết!")
                     await asyncio.sleep(5)
