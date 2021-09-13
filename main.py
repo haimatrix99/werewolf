@@ -27,7 +27,7 @@ key = {
     'thảo luận': 872488550954860587,
 }
 
-channels = {
+lang = {
     'ma sói':872024343029354526,
     'sói nguyền':872091054248177684,
     'couple': 872026916008374292, 
@@ -40,7 +40,7 @@ channels = {
     'thảo luận': 872104827541397515,
 }
 
-lop = {
+channels = {
     'ma sói':885082189631475742,
     'sói nguyền':885082165614882836,
     'couple': 885082217594892378, 
@@ -374,9 +374,9 @@ async def getrole(ctx):
                 dict_num_player[ctx.author] = player
 
                 await ctx.message.author.send("Chức năng của bạn là Dân làng")
-            await ctx.send(f"{ctx.author.mention} là Player số {player}")
+            await general.send(f"{ctx.author.mention} là Player số {player}")
         else:
-            await ctx.send("Bạn đã nhận chức năng của mình rồi!")
+            await general.send("Bạn đã nhận chức năng của mình rồi!")
     if len(dict_player) == num_players and startgame == False and num_players != 0:
         startgame = True
         await general.send("Đã đủ người chơi, Game xin được bắt đầu!")
@@ -508,7 +508,7 @@ async def chet(ctx):
 @commands.has_role("Quản trò")
 async def ketqua(ctx):
     general = client.get_channel(channels['thảo luận'])
-    global hunter_list, list_guarded, endgame, lives, deaths, player_kick, kick, dict_player,live_death, isdone, voting_time, fire, guarded,player_death, isseer, turn, info_death
+    global list_guarded_copy, hunter_list, list_guarded, endgame, lives, deaths, player_kick, kick, dict_player,live_death, isdone, voting_time, fire, guarded,player_death, isseer, turn, info_death
     role = get(ctx.guild.roles, name="Werewolf player")
     if lives >= deaths and isdone:
         member = dict_player[player_kick]
@@ -616,6 +616,7 @@ async def ketqua(ctx):
     isseer = False
     list_target.clear()
     list_werewolf_select.clear()
+    list_guarded_copy = copy.copy(list_guarded)
     if endgame == False:
         await asyncio.sleep(10)
         await general.send("Đêm đã xuống mời các bạn đi ngủ")
@@ -1372,7 +1373,7 @@ async def unmute_general(ctx):
 @client.command()
 @commands.has_role("Quản trò")
 async def turnround(ctx, index):
-    global player_death, witch_rescure, witch_kill, info_death, roles_in_game, werewolfs, list_vote_player
+    global player_death, witch_rescure, witch_kill, info_death, roles_in_game, werewolfs, list_vote_player, isdone, list_guarded_copy, list_guarded
     werewolf_channel = client.get_channel(channels['ma sói'])
     blackwolf_channel = client.get_channel(channels['sói nguyền'])
     guard_channel = client.get_channel(channels['bảo vệ'])
@@ -1383,6 +1384,7 @@ async def turnround(ctx, index):
     witch_channel = client.get_channel(channels['phù thuỷ'])
     general = client.get_channel(channels['thảo luận'])
     role = get(ctx.guild.roles, name="Werewolf player")
+    list_guarded_copy = copy.copy(list_guarded)
     if index == 1:
         await mute_general(ctx)
         await mute(ctx)
@@ -1394,6 +1396,8 @@ async def turnround(ctx, index):
                 await danhsach(guard_channel)
             await asyncio.sleep(30)
             await mute_guard(ctx)
+            if len(list_guarded) == len(list_guarded_copy):
+                list_guarded.append(0)
         if "Tiên tri" in roles_in_game:
             await unmute_seer(ctx)
             for member in seer:
@@ -1467,15 +1471,11 @@ async def turnround(ctx, index):
                     await general.send("Các bạn còn 1 phút!")
                 if len(list_vote_player) == len(dict_player):
                     await general.send("Mọi người đã vote xong hết!")
-                    await asyncio.sleep(5)
-                    await kiemtra(ctx)
                     break
             await general.send("Hết thời gian vote!")
             await general.send(role.mention)
-            await asyncio.sleep(5)
             await kiemtra(ctx)
             if isdone == True:
-                await asyncio.sleep(5)
                 await songhoacchet(ctx)
                 await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
                 for i in range(60):
@@ -1483,13 +1483,11 @@ async def turnround(ctx, index):
                     if len(live_death) == len(dict_player)-1:
                         await general.send("Mọi người đã vote xong hết!")
                         await asyncio.sleep(5)
-                        await ketqua(ctx)
                         break
                 await general.send("Hết thời gian biểu quyết sống hoặc chết")
                 await general.send(role.mention)
-                await asyncio.sleep(5)
                 await ketqua(ctx)
-            elif isdone == False:
+            else:
                 await ketqua(ctx)
     if index == 0:
         await mute_general(ctx)
@@ -1513,6 +1511,8 @@ async def turnround(ctx, index):
                 await danhsach(guard_channel)
             await asyncio.sleep(30)
             await mute_guard(ctx)
+            if len(list_guarded) == len(list_guarded_copy):
+                list_guarded.append(0)
         if "Tiên tri" in roles_in_game:
             await unmute_seer(ctx)
             for member in seer:
@@ -1586,31 +1586,23 @@ async def turnround(ctx, index):
                     await general.send("Các bạn còn 1 phút!")
                 if len(list_vote_player) == len(dict_player):
                     await general.send("Mọi người đã vote xong hết!")
-                    await asyncio.sleep(5)
-                    await kiemtra(ctx)
                     break
             await general.send("Hết thời gian vote!")
             await general.send(role.mention)
-            await asyncio.sleep(5)
             await kiemtra(ctx)
             if isdone == True:
-                await asyncio.sleep(5)
                 await songhoacchet(ctx)
                 await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
                 for i in range(60):
                     await asyncio.sleep(1)
                     if len(live_death) == len(dict_player)-1:
                         await general.send("Mọi người đã vote xong hết!")
-                        await asyncio.sleep(5)
-                        await ketqua(ctx)
                         break
                 await general.send("Hết thời gian biểu quyết sống hoặc chết")
                 await general.send(role.mention)
-                await asyncio.sleep(5)
                 await ketqua(ctx)
-            elif isdone == False:
+            else:
                 await ketqua(ctx)
-
 
 if __name__ == '__main__':
     keep_alive()
