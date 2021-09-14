@@ -588,8 +588,8 @@ async def ketqua(ctx):
 async def ghepdoi(ctx, arg1, arg2):
     global couples, iscupid, turn
     general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
-    couple_channel = client.get_channel(channels['couple'])
-    cupid_channel = client.get_channel(channels['cupid'])
+    couple_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
+    cupid_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
     if dict_role_player[ctx.author] == "Cupid" and iscupid == False:
         if int(arg1) > num_players or int(arg2) > num_players:
             await cupid_channel.send("Số player không phù hợp mời bạn chọn lại")
