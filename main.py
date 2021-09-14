@@ -14,45 +14,6 @@ TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
-key = {
-    'ma sói':872494848517763154,
-    'sói nguyền':872494874413396018,
-    'couple': 872494932336713828,
-    'bảo vệ':872495019116879922, 
-    'bán sói':872494986791387176,
-    'tiên tri':872495086200565760,
-    'phù thuỷ':872495057993859153,
-    'thợ săn':872495103376240640,
-    'cupid':872494905245708298,
-    'thảo luận': 872488550954860587,
-}
-
-lang = {
-    'ma sói':872024343029354526,
-    'sói nguyền':872091054248177684,
-    'couple': 872026916008374292, 
-    'bảo vệ':872091236054478889 ,
-    'bán sói':872090616971018260, 
-    'tiên tri':872090741818667049, 
-    'phù thuỷ':872090939395571752,
-    'thợ săn':872090783619108914, 
-    'cupid':872350367936020481,
-    'thảo luận': 872104827541397515,
-}
-
-channels = {
-    'ma sói':885082189631475742,
-    'sói nguyền':885082165614882836,
-    'couple': 885082217594892378, 
-    'bảo vệ':885082269717524521 ,
-    'bán sói':885082817007091743, 
-    'tiên tri':885082252369879050, 
-    'phù thuỷ':885082292748435466,
-    'thợ săn':885082332984377374, 
-    'cupid':885082205662097428, 
-    'thảo luận':885829759261605938,
-}
-
 def check_player(lst):
     if len(set(lst)) >= 2:
         dict_value = {index: lst.count(index) for index in lst}
@@ -76,6 +37,7 @@ def check_player(lst):
 @client.event
 async def on_ready():
     print(f'{client.user.display_name} has connected to Discord!')
+    print(client.)
 
 @client.command()
 async def ping(ctx):
@@ -92,47 +54,47 @@ async def reset(ctx):
     global info_death, werewolfs, dict_num_player, dict_role_player, num_players, roles, list_id,players, dict_player, dict_num_role, isdone, kick, lives, deaths, player_kick, live_death, couples, iscupid, blackwolf, curseguy, guard,  witch, seer, hunter, cupid, turn, fire, list_guarded, guarded, witch_kill, witch_rescure, isblackwolf, isseer, hunter_list, fire, player_death, list_werewolf_select, list_target, curseguyww, info_death,endgame, startgame
     general = client.get_channel(channels['thảo luận'])
     for member in werewolfs:
-            channel = client.get_channel(channels['ma sói'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in couples:
-            channel = client.get_channel(channels['couple'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite= perms)
     for member in blackwolf:
-            channel = client.get_channel(channels['sói nguyền'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in curseguy:
-            channel = client.get_channel(channels['bán sói'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in guard:
-            channel = client.get_channel(channels['bảo vệ'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in witch:
-            channel = client.get_channel(channels['phù thuỷ'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in seer:
-            channel = client.get_channel(channels['tiên tri'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in hunter:
-            channel = client.get_channel(channels['thợ săn'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
     for member in cupid:
-            channel = client.get_channel(channels['cupid'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)        
@@ -204,7 +166,7 @@ async def addrole(ctx, *, role):
 @client.command()
 async def play(ctx):
     global kick
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     member = ctx.author
     role = get(ctx.guild.roles, name="Werewolf player")
     if role not in member.roles and kick == False:
@@ -216,10 +178,9 @@ async def play(ctx):
         await general.send("Game chưa kết thúc.")
     await ctx.message.delete()
 
-
 @client.command()
 async def quit(ctx):
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     member = ctx.author
     role = get(ctx.guild.roles, name="Werewolf player")
     if role in member.roles:
@@ -233,15 +194,15 @@ async def quit(ctx):
 @client.command()
 @commands.has_role("Werewolf player")
 async def getrole(ctx):
-    werewolf_channel = client.get_channel(channels['ma sói'])
-    blackwolf_channel = client.get_channel(channels['sói nguyền'])
-    curseguy_channel = client.get_channel(channels['bán sói'])
-    guard_channel = client.get_channel(channels['bảo vệ'])
-    witch_channel = client.get_channel(channels['phù thuỷ'])
-    seer_channel = client.get_channel(channels['tiên tri'])
-    hunter_channel = client.get_channel(channels['thợ săn'])
-    cupid_channel = client.get_channel(channels['cupid'])
-    general = client.get_channel(channels['thảo luận'])
+    werewolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
+    blackwolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
+    curseguy_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
+    guard_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
+    witch_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
+    seer_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
+    hunter_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
+    cupid_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
 
     global roles_in_game, startgame, roles, players, dict_player, dict_num_player, dict_num_role, dict_role_player, blackwolf, curseguy, guard,  witch, seer, hunter, werewolfs, cupid, num_players
 
@@ -391,7 +352,7 @@ async def getrole(ctx):
 @commands.has_role("Werewolf player")
 async def skipvote(ctx):
     global list_vote_player, num_vote_player
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     if voting_time:
         if ctx.author.id not in list_vote_player:
             list_vote_player.append(ctx.author.id)
@@ -409,7 +370,7 @@ async def skipvote(ctx):
 async def vote(ctx, num_player):
     num_player = int(num_player)
     global num_players, list_vote_player, dict_player
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     if num_players != 0 and voting_time:
         member = dict_player[num_player]
         if num_player in dict_player and ctx.author.id not in list_vote_player:
@@ -431,7 +392,7 @@ async def vote(ctx, num_player):
 @commands.has_role("Quản trò")
 async def kiemtra(ctx):
     global num_vote_player, isdone, dict_value, player_kick
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     if len(set(num_vote_player)) >= 2:
         dict_value = {index: num_vote_player.count(index) for index in num_vote_player}
         player_kick = max(dict_value, key = dict_value.get)
@@ -471,7 +432,7 @@ async def kiemtra(ctx):
 @client.command()
 @commands.has_role("Werewolf player")
 async def song(ctx):
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     global lives, live_death, dict_player
     if isdone and dict_player[player_kick].name != ctx.author.name and ctx.author.id not in live_death:
         lives += 1
@@ -489,7 +450,7 @@ async def song(ctx):
 @client.command()
 @commands.has_role("Werewolf player")
 async def chet(ctx):
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     global deaths, live_death, dict_player
     if isdone and dict_player[player_kick].name != ctx.author.name and ctx.author.id not in live_death:
         deaths += 1
@@ -507,7 +468,7 @@ async def chet(ctx):
 @client.command()
 @commands.has_role("Quản trò")
 async def ketqua(ctx):
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     global list_guarded_copy, hunter_list, list_guarded, endgame, lives, deaths, player_kick, kick, dict_player,live_death, isdone, voting_time, fire, guarded,player_death, isseer, turn, info_death
     role = get(ctx.guild.roles, name="Werewolf player")
     if lives >= deaths and isdone:
@@ -520,13 +481,13 @@ async def ketqua(ctx):
         dict_player.pop(player_kick)
         kick = True
         if member in werewolfs:
-            werewolf_channel = client.get_channel(channels['ma sói'])
+            werewolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
             perms = werewolf_channel.overwrites_for(member)
             perms.view_channel = False
             await werewolf_channel.set_permissions(member, overwrite=perms)
             werewolfs.remove(member)
         if member in couples:
-            couple_channel = client.get_channel(channels['couple'])
+            couple_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
             perms = couple_channel.overwrites_for(member)
             perms.view_channel = False
             await couple_channel.set_permissions(member, overwrite= perms)
@@ -535,19 +496,19 @@ async def ketqua(ctx):
                 for member in couples:
                     await thubai(ctx, member)
         if member in blackwolf:
-            blackwolf_channel = client.get_channel(channels['sói nguyền'])
+            blackwolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
             perms_blackwolf = blackwolf_channel.overwrites_for(member)
             perms_blackwolf.view_channel = False
             await blackwolf_channel.set_permissions(member, overwrite=perms_blackwolf)
             blackwolf.remove(member)
         if member in curseguy:
-            channel = client.get_channel(channels['bán sói'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             curseguy.remove(member)
         if member in guard:
-            channel = client.get_channel(channels['bảo vệ'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
@@ -555,26 +516,26 @@ async def ketqua(ctx):
             list_guarded.clear()
             list_guarded = [0]
         if member in witch:
-            channel = client.get_channel(channels['phù thuỷ'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             witch.remove(member)
         if member in seer:
-            channel = client.get_channel(channels['tiên tri'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             seer.remove(member)
         if member in hunter:
-            channel = client.get_channel(channels['thợ săn'])
+            channel = cclient.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             hunter.remove(member)
             await thubai(ctx, hunter_list[-1])
         if member in cupid:
-            channel = client.get_channel(channels['cupid'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
@@ -626,7 +587,7 @@ async def ketqua(ctx):
 @commands.has_role("Werewolf player")
 async def ghepdoi(ctx, arg1, arg2):
     global couples, iscupid, turn
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     couple_channel = client.get_channel(channels['couple'])
     cupid_channel = client.get_channel(channels['cupid'])
     if dict_role_player[ctx.author] == "Cupid" and iscupid == False:
@@ -658,7 +619,7 @@ async def ghepdoi(ctx, arg1, arg2):
 @commands.has_role("Quản trò")
 async def thubai(ctx, member: discord.Member):
     global kick, dict_player, dict_num_player, list_guarded, hunter_list, endgame, startgame, couples, blackwolf, curseguy, guard, witch, seer, hunter, cupid
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     role = get(ctx.guild.roles, name="Werewolf player")
     if dict_num_player[member] in dict_player:
         dict_player.pop(dict_num_player[member])
@@ -666,13 +627,13 @@ async def thubai(ctx, member: discord.Member):
         await member.remove_roles(role, atomic= False)
         await general.send(f"{member.mention} đã chết vào sáng hôm nay")
         if member in werewolfs:
-            werewolf_channel = client.get_channel(channels['ma sói'])
+            werewolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
             perms = werewolf_channel.overwrites_for(member)
             perms.view_channel = False
             await werewolf_channel.set_permissions(member, overwrite=perms)
             werewolfs.remove(member)
         if member in couples:
-            couple_channel = client.get_channel(channels['couple'])
+            couple_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
             perms = couple_channel.overwrites_for(member)
             perms.view_channel = False
             await couple_channel.set_permissions(member, overwrite= perms)
@@ -681,19 +642,19 @@ async def thubai(ctx, member: discord.Member):
                 for member in couples:
                     await thubai(ctx, member)
         if member in blackwolf:
-            blackwolf_channel = client.get_channel(channels['sói nguyền'])
+            blackwolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
             perms_blackwolf = blackwolf_channel.overwrites_for(member)
             perms_blackwolf.view_channel = False
             await blackwolf_channel.set_permissions(member, overwrite=perms_blackwolf)
             blackwolf.remove(member)
         if member in curseguy:
-            channel = client.get_channel(channels['bán sói'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             curseguy.remove(member)
         if member in guard:
-            channel = client.get_channel(channels['bảo vệ'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
@@ -701,26 +662,26 @@ async def thubai(ctx, member: discord.Member):
             list_guarded.clear()
             list_guarded = [0]
         if member in witch:
-            channel = client.get_channel(channels['phù thuỷ'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             witch.remove(member)
         if member in seer:
-            channel = client.get_channel(channels['tiên tri'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             seer.remove(member)
         if member in hunter:
-            channel = client.get_channel(channels['thợ săn'])
+            channel = cclient.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
             hunter.remove(member)
             await thubai(ctx, hunter_list[-1])
         if member in cupid:
-            channel = client.get_channel(channels['cupid'])
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
             perms = channel.overwrites_for(member)
             perms.view_channel = False
             await channel.set_permissions(member, overwrite=perms)
@@ -748,7 +709,7 @@ async def thubai(ctx, member: discord.Member):
                 await mod(ctx)
                 await reset(ctx)
                 endgame = True
-
+                
 @client.command()
 @commands.has_role("Werewolf player")
 async def danhsach(ctx):
@@ -762,11 +723,12 @@ async def danhsach(ctx):
     else:
         await ctx.send("Game chưa bắt đầu")
 
+
 @client.command()
 @commands.has_role("Quản trò")
 async def mod(ctx):
     global dict_role_player
-    general = client.get_channel(channels['thảo luận'])
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     role_player = dict_role_player.keys()
     if len(role_player) != 0:
         embed = discord.Embed(title="Role player", colour=discord.Color.green())
@@ -780,7 +742,7 @@ async def mod(ctx):
 @commands.has_role("Quản trò")
 async def mute_werewolf(ctx):
     for member in werewolfs:
-        channel = client.get_channel(channels['ma sói'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -788,7 +750,7 @@ async def mute_werewolf(ctx):
 @commands.has_role("Quản trò")
 async def mute_couple(ctx):         
     for member in couples:
-        channel = client.get_channel(channels['couple'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite= perms)
@@ -796,7 +758,7 @@ async def mute_couple(ctx):
 @commands.has_role("Quản trò")
 async def mute_blackwolf(ctx):
     for member in blackwolf:
-        channel = client.get_channel(channels['sói nguyền'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -804,7 +766,7 @@ async def mute_blackwolf(ctx):
 @commands.has_role("Quản trò")
 async def mute_curseguy(ctx):
     for member in curseguy:
-        channel = client.get_channel(channels['bán sói'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -812,7 +774,7 @@ async def mute_curseguy(ctx):
 @commands.has_role("Quản trò")
 async def mute_guard(ctx):
     for member in guard:
-        channel = client.get_channel(channels['bảo vệ'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -820,7 +782,7 @@ async def mute_guard(ctx):
 @commands.has_role("Quản trò")
 async def mute_witch(ctx):
     for member in witch:
-        channel = client.get_channel(channels['phù thuỷ'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -828,7 +790,7 @@ async def mute_witch(ctx):
 @commands.has_role("Quản trò")
 async def mute_seer(ctx):
     for member in seer:
-        channel = client.get_channel(channels['tiên tri'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -836,7 +798,7 @@ async def mute_seer(ctx):
 @commands.has_role("Quản trò")
 async def mute_hunter(ctx):
     for member in hunter:
-        channel = client.get_channel(channels['thợ săn'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -844,7 +806,7 @@ async def mute_hunter(ctx):
 @commands.has_role("Quản trò")
 async def mute_cupid(ctx):
     for member in cupid:
-        channel = client.get_channel(channels['cupid'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = False
         await channel.set_permissions(member, overwrite=perms)
@@ -853,15 +815,15 @@ async def mute_cupid(ctx):
 @commands.has_role("Quản trò")
 async def unmute_werewolf(ctx):
     for member in werewolfs:
-        channel = client.get_channel(channels['ma sói'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
 @client.command()
 @commands.has_role("Quản trò")
-async def unmute_couple(ctx):
+async def unmute_couple(ctx):         
     for member in couples:
-        channel = client.get_channel(channels['couple'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite= perms)
@@ -869,7 +831,7 @@ async def unmute_couple(ctx):
 @commands.has_role("Quản trò")
 async def unmute_blackwolf(ctx):
     for member in blackwolf:
-        channel = client.get_channel(channels['sói nguyền'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -877,7 +839,7 @@ async def unmute_blackwolf(ctx):
 @commands.has_role("Quản trò")
 async def unmute_curseguy(ctx):
     for member in curseguy:
-        channel = client.get_channel(channels['bán sói'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -885,7 +847,7 @@ async def unmute_curseguy(ctx):
 @commands.has_role("Quản trò")
 async def unmute_guard(ctx):
     for member in guard:
-        channel = client.get_channel(channels['bảo vệ'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -893,7 +855,7 @@ async def unmute_guard(ctx):
 @commands.has_role("Quản trò")
 async def unmute_witch(ctx):
     for member in witch:
-        channel = client.get_channel(channels['phù thuỷ'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -901,7 +863,7 @@ async def unmute_witch(ctx):
 @commands.has_role("Quản trò")
 async def unmute_seer(ctx):
     for member in seer:
-        channel = client.get_channel(channels['tiên tri'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -909,7 +871,7 @@ async def unmute_seer(ctx):
 @commands.has_role("Quản trò")
 async def unmute_hunter(ctx):
     for member in hunter:
-        channel = client.get_channel(channels['thợ săn'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -917,7 +879,7 @@ async def unmute_hunter(ctx):
 @commands.has_role("Quản trò")
 async def unmute_cupid(ctx):
     for member in cupid:
-        channel = client.get_channel(channels['cupid'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
         perms = channel.overwrites_for(member)
         perms.view_channel = True
         await channel.set_permissions(member, overwrite=perms)
@@ -929,20 +891,6 @@ async def thaoluan(ctx):
     global voting_time
     voting_time = True
     await general.send("Thời gian thảo luận và vote bắt đầu!")
-
-@client.command()
-@commands.has_role("Quản trò")
-async def voting(ctx):
-    general = client.get_channel(channels['thảo luận'])
-    global voting_time
-    voting_time = True
-    await general.send("Thời gian vote bắt đầu!")
-
-@client.command()
-@commands.has_role("Quản trò")
-async def songhoacchet(ctx):
-    general = client.get_channel(channels['thảo luận'])
-    await general.send("Thời gian biểu quyết sống hoặc chết bắt đầu!")
 
 @client.command()
 @commands.has_role("Quản trò")
@@ -1256,106 +1204,106 @@ async def chucnang(ctx):
 @commands.has_role("Quản trò")
 async def mute(ctx):
     for member in werewolfs:
-        channel = client.get_channel(channels['ma sói'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)  
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in couples:
-        channel = client.get_channel(channels['couple'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite= perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite= perms)
     for member in blackwolf:
-        channel = client.get_channel(channels['sói nguyền'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in curseguy:
-        channel = client.get_channel(channels['bán sói'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in guard:
-        channel = client.get_channel(channels['bảo vệ'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in witch:
-        channel = client.get_channel(channels['phù thuỷ'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in seer:
-        channel = client.get_channel(channels['tiên tri'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in hunter:
-        channel = client.get_channel(channels['thợ săn'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms)
     for member in cupid:
-        channel = client.get_channel(channels['cupid'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = False
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = False
+            await channel.set_permissions(member, overwrite=perms) 
     
 
 @client.command()
 @commands.has_role("Quản trò")
 async def unmute(ctx):
     for member in werewolfs:
-        channel = client.get_channel(channels['ma sói'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in couples:
-        channel = client.get_channel(channels['couple'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite= perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite= perms)
     for member in blackwolf:
-        channel = client.get_channel(channels['sói nguyền'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in curseguy:
-        channel = client.get_channel(channels['bán sói'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in guard:
-        channel = client.get_channel(channels['bảo vệ'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in witch:
-        channel = client.get_channel(channels['phù thuỷ'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in seer:
-        channel = client.get_channel(channels['tiên tri'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in hunter:
-        channel = client.get_channel(channels['thợ săn'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms)
     for member in cupid:
-        channel = client.get_channel(channels['cupid'])
-        perms = channel.overwrites_for(member)
-        perms.view_channel = True
-        await channel.set_permissions(member, overwrite=perms)
+            channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
+            perms = channel.overwrites_for(member)
+            perms.view_channel = True
+            await channel.set_permissions(member, overwrite=perms) 
 
 @client.command()
 @commands.has_role("Quản trò")
 async def mute_general(ctx):
     for member in dict_player.values():
-        channel = client.get_channel(channels['thảo luận'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
         perms = channel.overwrites_for(member)
         perms.send_messages = False
         await channel.set_permissions(member, overwrite=perms)
@@ -1364,7 +1312,7 @@ async def mute_general(ctx):
 @commands.has_role("Quản trò")
 async def unmute_general(ctx):
     for member in dict_player.values():
-        channel = client.get_channel(channels['thảo luận'])
+        channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
         perms = channel.overwrites_for(member)
         perms.send_messages = True
         await channel.set_permissions(member, overwrite=perms)
@@ -1373,15 +1321,16 @@ async def unmute_general(ctx):
 @commands.has_role("Quản trò")
 async def turnround(ctx, index):
     global player_death, witch_rescure, witch_kill, info_death, roles_in_game, werewolfs, list_vote_player, isdone, list_guarded_copy, list_guarded
-    werewolf_channel = client.get_channel(channels['ma sói'])
-    blackwolf_channel = client.get_channel(channels['sói nguyền'])
-    guard_channel = client.get_channel(channels['bảo vệ'])
-    seer_channel = client.get_channel(channels['tiên tri'])
-    hunter_channel = client.get_channel(channels['thợ săn'])
-    cupid_channel = client.get_channel(channels['cupid'])
-    couple_channel = client.get_channel(channels['couple'])
-    witch_channel = client.get_channel(channels['phù thuỷ'])
-    general = client.get_channel(channels['thảo luận'])
+    werewolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='ma-sói').id)
+    blackwolf_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='sói-nguyền').id)
+    curseguy_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bán-sói').id)
+    guard_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='bảo-vệ').id)
+    witch_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='phù-thuỷ').id)
+    seer_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='tiên-tri').id)
+    hunter_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='thợ-săn').id)
+    cupid_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='cupid').id)
+    couple_channel = client.get_channel(discord.utils.get(ctx.guild.channels, name='couple').id)
+    general = client.get_channel(discord.utils.get(ctx.guild.channels, name='thảo-luận').id)
     role = get(ctx.guild.roles, name="Werewolf player")
     list_guarded_copy = copy.copy(list_guarded)
     if index == 1:
@@ -1475,7 +1424,6 @@ async def turnround(ctx, index):
             await general.send(role.mention)
             await kiemtra(ctx)
             if isdone == True:
-                await songhoacchet(ctx)
                 await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
                 for i in range(60):
                     await asyncio.sleep(1)
@@ -1590,7 +1538,6 @@ async def turnround(ctx, index):
             await general.send(role.mention)
             await kiemtra(ctx)
             if isdone == True:
-                await songhoacchet(ctx)
                 await general.send("Các bạn có 1 phút để biểu quyết sống hoặc chết cho người bị lên dàn. $song để vote sống $chet để vote chết")
                 for i in range(60):
                     await asyncio.sleep(1)
