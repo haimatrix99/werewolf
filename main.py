@@ -37,7 +37,6 @@ def check_player(lst):
 @client.event
 async def on_ready():
     print(f'{client.user.display_name} has connected to Discord!')
-    print(client.)
 
 @client.command()
 async def ping(ctx):
