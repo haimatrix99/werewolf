@@ -762,7 +762,6 @@ async def danhsach(ctx):
     else:
         await ctx.send("Game chưa bắt đầu")
 
-
 @client.command()
 @commands.has_role("Quản trò")
 async def mod(ctx):
@@ -1495,8 +1494,8 @@ async def turnround(ctx, index):
         await unmute_cupid(ctx)
         for member in cupid:
             await cupid_channel.send(member.mention)
-        await cupid_channel.send("Mời bạn chọn cặp đôi cho mình!\nLệnh của cupid: $ghepdoi [Số của player1] [Số của player2]")
-        await danhsach(cupid_channel)
+            await cupid_channel.send("Mời bạn chọn cặp đôi cho mình!\nLệnh của cupid: $ghepdoi [Số của player1] [Số của player2]")
+            await danhsach(cupid_channel)
     if index == 2:
         await mute_cupid(ctx)
         await unmute_couple(ctx)
