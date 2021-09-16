@@ -6,11 +6,7 @@ from discord.utils import get
 from settings import *
 import copy
 import os
-from dotenv import load_dotenv
 from keep_alive import keep_alive
-load_dotenv()
-
-TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
@@ -1551,4 +1547,4 @@ async def turnround(ctx, index):
 
 if __name__ == '__main__':
     keep_alive()
-    client.run(TOKEN)
+    client.run(process.env.TOKEN)
