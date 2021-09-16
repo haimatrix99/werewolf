@@ -6,7 +6,8 @@ from discord.utils import get
 from settings import *
 import copy
 from keep_alive import keep_alive
-from boto.s3.connection import S3Connection
+import os
+from dotenv import load_dotenv
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
@@ -1546,6 +1547,7 @@ async def turnround(ctx, index):
                 await ketqua(ctx)
 
 if __name__ == '__main__':
-    s3 = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
+    load_dotenv()
+    TOKEN = os.getenv('DISCORD_BOT_TOKEN')
     keep_alive()
-    client.run(s3.secret_key)
+    client.run(TOKEN)
