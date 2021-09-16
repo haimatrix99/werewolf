@@ -5,9 +5,7 @@ from discord.ext import commands
 from discord.utils import get
 from settings import *
 import copy
-import os
 from keep_alive import keep_alive
-import process
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
@@ -1548,4 +1546,4 @@ async def turnround(ctx, index):
 
 if __name__ == '__main__':
     keep_alive()
-    client.run(process.env.TOKEN)
+    client.run(TOKEN)
