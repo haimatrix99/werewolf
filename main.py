@@ -7,6 +7,7 @@ from settings import *
 import copy
 import os
 from keep_alive import keep_alive
+import process
 
 client = commands.Bot(command_prefix='$', help_command=None)
 
